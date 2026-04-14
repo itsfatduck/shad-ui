@@ -1,10 +1,9 @@
-﻿using System;
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Rendering;
 using Avalonia.VisualTree;
 
 // ReSharper disable once CheckNamespace
@@ -13,7 +12,6 @@ namespace ShadUI;
 internal sealed class SmoothScrollController
 {
     private readonly ScrollViewer _instance;
-    private IRenderRoot? _visualRoot;
     private TopLevel? _topLevel;
 
     private double _targetX, _currentX;
@@ -78,11 +76,9 @@ internal sealed class SmoothScrollController
 
         var source = e.Source as Visual;
         
-        var sourceRoot = source?.GetVisualRoot();
-        _visualRoot ??= _instance.GetVisualRoot();
-
-        if (sourceRoot != _visualRoot)
-            return; // this event is from a popup/flyout. TRAP IT!!! >:)
+        var sourceTopLevel = source is null ? null : TopLevel.GetTopLevel(source);
+        if (sourceTopLevel is not null && sourceTopLevel != _topLevel)
+            return; // Event comes from popup/flyout hosted by another top-level.
 
         var isShiftPressed = (e.KeyModifiers & KeyModifiers.Shift) != 0;
         while (source is not null && source != _instance)

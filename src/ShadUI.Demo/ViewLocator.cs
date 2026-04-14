@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using System.Reflection;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
@@ -10,6 +11,7 @@ namespace ShadUI.Demo;
 public class ViewLocator : IDataTemplate
 {
     private static readonly ConcurrentDictionary<Type, Type?> Cache = [];
+    private static readonly ConditionalWeakTable<object, Control> ViewCache = new();
 
     private static readonly Assembly CurrentAssembly = Assembly.GetExecutingAssembly();
 
@@ -45,19 +47,15 @@ public class ViewLocator : IDataTemplate
 
         if (viewType is null) return new TextBlock { Text = "View not found: " + viewModelType.FullName };
 
+        if (ViewCache.TryGetValue(param, out var cached))
+        {
+            cached.DataContext = param;
+            return cached;
+        }
+
         var control = (Control)Activator.CreateInstance(viewType)!;
         control.DataContext = param;
-
-        // Hook up disposal: when view is unloaded, dispose the ViewModel
-        control.Unloaded += (s, e) =>
-        {
-            if (control.DataContext is IDisposable disposable)
-            {
-                disposable.Dispose();
-            }
-            control.DataContext = null; // Break reference
-        };
-
+        ViewCache.Add(param, control);
         return control;
     }
 

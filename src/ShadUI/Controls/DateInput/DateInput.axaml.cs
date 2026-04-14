@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 // ReSharper disable once CheckNamespace
@@ -129,7 +130,7 @@ public class DateInput : TemplatedControl
 
     private bool _updating;
 
-    private void OnInputChanged(object sender, TextChangedEventArgs e)
+    private void OnInputChanged(object? sender, TextChangedEventArgs e)
     {
         if (sender is not TextBox textBox) return;
 
@@ -149,7 +150,7 @@ public class DateInput : TemplatedControl
         nextTextBox.SelectAll();
     }
 
-    private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
+    private void OnTextBoxLostFocus(object? sender, FocusChangedEventArgs e)
     {
         InputFocus = false;
 

@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:shadui="clr-namespace:ShadUI"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -12,7 +12,7 @@
                     </StackPanel>
                 </shadui:Card.Header>
                 <StackPanel Spacing="16">
-                    <TextBox Watermark="Name of your project" shadui:ControlAssist.Label="Name" />
+                    <TextBox PlaceholderText="Name of your project" shadui:ControlAssist.Label="Name" />
                     <ComboBox
                         SelectedIndex="0"
                         Width="300"

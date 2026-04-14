@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -10,6 +11,7 @@ namespace ShadUI.Demo;
 
 public sealed partial class MainWindowViewModel : ViewModelBase
 {
+    private readonly PageManager _pageManager;
     private readonly ThemeWatcher _themeWatcher;
     private readonly AboutViewModel _aboutViewModel;
     private readonly DashboardViewModel _dashboardViewModel;
@@ -38,7 +40,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private readonly ToggleViewModel _toggleViewModel;
     private readonly ToolTipViewModel _toolTipViewModel;
     private readonly MiscellaneousViewModel _miscellaneousViewModel;
-    private object? _previousPage;
+    private readonly HashSet<Type> _initializedPages = [];
     private bool _disposed;
 
     public MainWindowViewModel(
@@ -74,6 +76,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
         ToolTipViewModel toolTipViewModel,
         MiscellaneousViewModel miscellaneousViewModel)
     {
+        _pageManager = pageManager;
         _dialogManager = dialogManager;
         _toastManager = toastManager;
         _themeWatcher = themeWatcher;
@@ -128,15 +131,12 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         if (SelectedPage == page) return;
 
-        if (_previousPage is IDisposable disposablePrevious)
-        {
-            disposablePrevious.Dispose();
-        }
-
-        _previousPage = SelectedPage;
         SelectedPage = page;
         CurrentRoute = route;
-        page.Initialize();
+        if (_initializedPages.Add(pageType))
+        {
+            page.Initialize();
+        }
     }
 
     [RelayCommand]
@@ -371,15 +371,7 @@ public sealed partial class MainWindowViewModel : ViewModelBase
 
         if (_disposed) return;
 
-        if (SelectedPage is IDisposable disposableCurrent)
-        {
-            disposableCurrent.Dispose();
-        }
-
-        if (_previousPage is IDisposable disposablePrevious)
-        {
-            disposablePrevious.Dispose();
-        }
+        _pageManager.DisposeCachedPages();
 
         DialogManager.Dispose();
 

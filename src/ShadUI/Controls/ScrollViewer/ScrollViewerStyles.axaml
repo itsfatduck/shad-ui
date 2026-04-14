@@ -1,4 +1,4 @@
-﻿<!-- xmlns:system="clr-namespace:System;assembly=netstandard" 
+<!-- xmlns:system="clr-namespace:System;assembly=netstandard" 
 is use for x:TypeArguments="system:Double" DO NOT REMOVE -->
 <Styles
     xmlns="https://github.com/avaloniaui"
@@ -36,12 +36,9 @@ is use for x:TypeArguments="system:Double" DO NOT REMOVE -->
                             </ScrollContentPresenter.Transitions>
                             <ScrollContentPresenter.GestureRecognizers>
                                 <ScrollGestureRecognizer
-                                    CanHorizontallyScroll="{CompiledBinding CanHorizontallyScroll,
-                                                                            ElementName=PART_ContentPresenter}"
-                                    CanVerticallyScroll="{CompiledBinding CanVerticallyScroll,
-                                                                          ElementName=PART_ContentPresenter}"
-                                    IsScrollInertiaEnabled="{CompiledBinding (ScrollViewer.IsScrollInertiaEnabled),
-                                                                             ElementName=PART_ContentPresenter}" />
+                                    CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
+                                    CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
+                                    IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
                             </ScrollContentPresenter.GestureRecognizers>
                         </ScrollContentPresenter>
                     </Panel>
@@ -86,20 +83,10 @@ is use for x:TypeArguments="system:Double" DO NOT REMOVE -->
             <Setter Property="IsVisible" Value="True" />
         </Style>
         <Style Selector="^ /template/ Panel#InnerPanel">
-            <Setter Property="OpacityMask">
-                <MultiBinding Converter="{x:Static shadui:ScrollerToOpacityMask.Top}">
-                    <Binding Path="$parent[Panel].Children[2].Children[0].Value" />
-                    <Binding Path="$parent[Panel].Children[2].Children[0].Minimum" />
-                </MultiBinding>
-            </Setter>
+            <Setter Property="OpacityMask" Value="{x:Null}" />
         </Style>
         <Style Selector="^ /template/ ScrollContentPresenter#PART_ContentPresenter">
-            <Setter Property="OpacityMask">
-                <MultiBinding Converter="{x:Static shadui:ScrollerToOpacityMask.Bottom}">
-                    <Binding Path="$parent[Panel;1].Children[2].Children[0].Value" />
-                    <Binding Path="$parent[Panel;1].Children[2].Children[0].Maximum" />
-                </MultiBinding>
-            </Setter>
+            <Setter Property="OpacityMask" Value="{x:Null}" />
         </Style>
     </Style>
 </Styles>

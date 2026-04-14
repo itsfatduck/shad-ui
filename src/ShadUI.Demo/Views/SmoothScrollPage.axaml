@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
@@ -88,30 +88,32 @@
                     shadui:SmoothScrollAssist.BaseStepSize="{Binding BaseStepSize}"
                     shadui:SmoothScrollAssist.SmoothingFactor="{Binding SmoothingFactor}"
                     Height="315">
-                    <ItemsControl ItemsSource="{Binding ScrollItems}">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <WrapPanel Orientation="Horizontal" Width="3200"  />
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                    <ItemsRepeater ItemsSource="{Binding ScrollItems}">
+                        <ItemsRepeater.Layout>
+                            <UniformGridLayout
+                                MinColumnSpacing="16"
+                                MinItemHeight="100"
+                                MinItemWidth="100"
+                                MinRowSpacing="16"
+                                Orientation="Horizontal" />
+                        </ItemsRepeater.Layout>
+                        <ItemsRepeater.ItemTemplate>
+                            <DataTemplate x:DataType="x:String">
                                 <Border
                                     Background="{DynamicResource PrimaryColor}"
                                     CornerRadius="{DynamicResource LgCornerRadius}"
-                                    Width="100"
                                     Height="100"
-                                    Margin="8">
+                                    Width="100">
                                     <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
+                                        Classes="h4"
                                         Foreground="{DynamicResource PrimaryForegroundColor}"
-                                        Text="{Binding}"
-                                        Classes="h4"  />
+                                        HorizontalAlignment="Center"
+                                        Text="{CompiledBinding .}"
+                                        VerticalAlignment="Center" />
                                 </Border>
                             </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                        </ItemsRepeater.ItemTemplate>
+                    </ItemsRepeater>
                 </ScrollViewer>
             </controls:ControlBlock>
         </ScrollViewer>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -188,7 +188,10 @@ internal static class OnScreenKeyboard
 
         // ReSharper disable once SuspiciousTypeConversion.Global
         ((ITipInvocation)uiHostNoLaunch).Toggle(hwnd);
-        Marshal.ReleaseComObject(uiHostNoLaunch);
+        if (OperatingSystem.IsWindows())
+        {
+            Marshal.ReleaseComObject(uiHostNoLaunch);
+        }
     }
 
     [ComImport] [Guid("4ce576fa-83dc-4F88-951c-9d0782b4e376")]

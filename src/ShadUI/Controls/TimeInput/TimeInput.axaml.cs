@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 
 // ReSharper disable once CheckNamespace
@@ -204,7 +205,7 @@ public class TimeInput : TemplatedControl
     private bool _updating;
     private bool _fromInput;
 
-    private void OnInputChanged(object sender, TextChangedEventArgs e)
+    private void OnInputChanged(object? sender, TextChangedEventArgs e)
     {
         if (sender is not TextBox textBox || !_fromInput) return;
 
@@ -221,7 +222,7 @@ public class TimeInput : TemplatedControl
         nextTextBox?.SelectAll();
     }
 
-    private void OnTextBoxLostFocus(object sender, RoutedEventArgs e)
+    private void OnTextBoxLostFocus(object? sender, FocusChangedEventArgs e)
     {
         InputFocus = false;
 
@@ -254,7 +255,7 @@ public class TimeInput : TemplatedControl
         textBox.Text = value.ToString().PadLeft(2, '0');
     }
 
-    private void OnToggleButtonCheckChanged(object sender, RoutedEventArgs e)
+    private void OnToggleButtonCheckChanged(object? sender, RoutedEventArgs e)
     {
         if (sender is not ToggleButton toggleButton) return;
 

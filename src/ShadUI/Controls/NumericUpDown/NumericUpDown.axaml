@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:shadui="clr-namespace:ShadUI"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -41,17 +41,17 @@
                                 Margin="{TemplateBinding Padding}"
                                 Name="Watermark"
                                 Opacity="0.5"
-                                Text="{TemplateBinding Watermark}"
+                                Text="{TemplateBinding PlaceholderText}"
                                 TextAlignment="{TemplateBinding TextAlignment}"
                                 TextWrapping="{TemplateBinding TextWrapping}"
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                 <TextBlock.IsVisible>
                                     <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                        <CompiledBinding
+                                        <Binding
                                             Converter="{x:Static StringConverters.IsNullOrEmpty}"
                                             ElementName="PART_TextPresenter"
                                             Path="PreeditText" />
-                                        <CompiledBinding
+                                        <Binding
                                             Converter="{x:Static StringConverters.IsNullOrEmpty}"
                                             Path="Text"
                                             RelativeSource="{RelativeSource TemplatedParent}" />
@@ -109,7 +109,7 @@
                     <Template>
                         <Button
                             ClipToBounds="True"
-                            Command="{CompiledBinding $parent[TextBox].Clear}"
+                            Command="{Binding $parent[TextBox].Clear}"
                             Focusable="False"
                             Theme="{StaticResource ClearButtonTheme}" />
                     </Template>
@@ -169,7 +169,7 @@
                                     TextWrapping="NoWrap"
                                     Theme="{StaticResource InnerTextBoxTheme}"
                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                    Watermark="{TemplateBinding Watermark}" />
+                                    PlaceholderText="{TemplateBinding PlaceholderText}" />
                             </ButtonSpinner>
                             <TextBlock
                                 Classes="Caption Muted"

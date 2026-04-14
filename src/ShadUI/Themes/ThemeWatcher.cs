@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
@@ -34,7 +34,7 @@ public class ThemeWatcher
     /// <summary>
     ///     Handles theme change events and updates the current theme colors.
     /// </summary>
-    private void OnThemeChanged(object sender, EventArgs e)
+    private void OnThemeChanged(object? sender, EventArgs e)
     {
         var colors = GetThemeColors();
         ThemeColors = colors;

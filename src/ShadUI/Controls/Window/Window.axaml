@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="https://github.com/avaloniaui"
     xmlns:shadui="clr-namespace:ShadUI"
     xmlns:system="clr-namespace:System;assembly=netstandard"
@@ -54,8 +54,7 @@
         <Setter Property="Margin" Value="0" />
         <Setter Property="Background" Value="{DynamicResource WindowBackgroundColor}" />
         <Setter Property="TransparencyLevelHint" Value="Transparent" />
-        <Setter Property="SystemDecorations" Value="{OnPlatform Full, Linux=None, x:TypeArguments=SystemDecorations}" />
-        <Setter Property="ExtendClientAreaChromeHints" Value="PreferSystemChrome" />
+        <Setter Property="WindowDecorations" Value="None" />
         <Setter Property="ExtendClientAreaToDecorationsHint" Value="True" />
         <Setter Property="TextElement.Foreground" Value="{DynamicResource ForegroundColor}" />
         <Setter Property="BorderThickness" Value="1" />
@@ -70,15 +69,6 @@
                     CornerRadius="{TemplateBinding RootCornerRadius}"
                     Margin="{TemplateBinding Margin}">
                     <VisualLayerManager IsHitTestVisible="True">
-                        <VisualLayerManager.ChromeOverlayLayer>
-                            <ItemsControl ItemsSource="{CompiledBinding Hosts, RelativeSource={RelativeSource AncestorType={x:Type shadui:Window}}}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <Panel />
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </VisualLayerManager.ChromeOverlayLayer>
                         <Panel Name="PART_Root">
                             <DockPanel LastChildFill="True">
                                 <Panel DockPanel.Dock="Top">
@@ -199,6 +189,16 @@
                                     IsHitTestVisible="True"
                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             </DockPanel>
+                            <ItemsControl
+                                IsHitTestVisible="False"
+                                ItemsSource="{Binding Hosts, RelativeSource={RelativeSource AncestorType={x:Type shadui:Window}}}"
+                                ZIndex="1000">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Panel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
                         </Panel>
                     </VisualLayerManager>
                 </Border>

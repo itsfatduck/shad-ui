@@ -1,4 +1,4 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 
@@ -19,7 +19,7 @@ public static class ControlAssist
                 var label = eventArgs.NameScope.Find<TextBlock>("PART_Label");
                 if (label is null || string.IsNullOrEmpty(args.NewValue?.ToString())) return;
 
-                if (sender is TextBox tb) tb.UseFloatingWatermark = true;
+                if (sender is TextBox tb) tb.UseFloatingPlaceholder = true;
 
                 label.Text = args.NewValue!.ToString();
             };

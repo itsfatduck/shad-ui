@@ -1,4 +1,4 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     x:ClassModifier="internal"
     xmlns="https://github.com/avaloniaui"
     xmlns:shadui="clr-namespace:ShadUI"
@@ -75,17 +75,17 @@
                                         Margin="{TemplateBinding Padding}"
                                         Name="watermark"
                                         Opacity="0.5"
-                                        Text="{TemplateBinding Watermark}"
+                                        Text="{TemplateBinding PlaceholderText}"
                                         TextAlignment="{TemplateBinding TextAlignment}"
                                         TextWrapping="{TemplateBinding TextWrapping}"
                                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                                         <TextBlock.IsVisible>
                                             <MultiBinding Converter="{x:Static BoolConverters.And}">
-                                                <CompiledBinding
+                                                <Binding
                                                     Converter="{x:Static StringConverters.IsNullOrEmpty}"
                                                     ElementName="PART_TextPresenter"
                                                     Path="PreeditText" />
-                                                <CompiledBinding
+                                                <Binding
                                                     Converter="{x:Static StringConverters.IsNullOrEmpty}"
                                                     Path="Text"
                                                     RelativeSource="{RelativeSource TemplatedParent}" />
@@ -158,7 +158,7 @@
         <Setter Property="FontSize" Value="14" />
         <Setter Property="Padding" Value="12,4" />
         <Setter Property="FontWeight" Value="Medium" />
-        <Setter Property="Watermark" Value="Pick a date" />
+        <Setter Property="PlaceholderText" Value="Pick a date" />
         <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         <Setter Property="Template">
             <ControlTemplate>
@@ -198,8 +198,8 @@
                                 Name="PART_TextBox"
                                 Padding="{TemplateBinding Padding}"
                                 Theme="{StaticResource InnerTextBoxTheme}"
-                                UseFloatingWatermark="False"
-                                Watermark="{TemplateBinding Watermark}" />
+                                UseFloatingPlaceholder="False"
+                                PlaceholderText="{TemplateBinding PlaceholderText}" />
                             <Border
                                 Background="Transparent"
                                 CornerRadius="{TemplateBinding CornerRadius}"
@@ -211,11 +211,11 @@
                                 IsLightDismissEnabled="True"
                                 IsOpen="{TemplateBinding IsDropDownOpen,
                                                          Mode=TwoWay}"
-                                MinWidth="{CompiledBinding Bounds.Width,
+                                MinWidth="{Binding Bounds.Width,
                                                            RelativeSource={RelativeSource TemplatedParent}}"
                                 Name="PART_Popup"
                                 Placement="BottomEdgeAlignedLeft"
-                                PlacementTarget="{CompiledBinding #PART_TextBox}"
+                                PlacementTarget="{Binding #PART_TextBox}"
                                 VerticalOffset="5">
                                 <LayoutTransformControl Name="PART_LayoutTransform" RenderTransformOrigin="50%, 0%">
                                     <Calendar
@@ -228,7 +228,7 @@
                                         IsTodayHighlighted="{TemplateBinding IsTodayHighlighted}"
                                         Margin="-2,0,0,0"
                                         Name="PART_Calendar"
-                                        SelectedDate="{CompiledBinding RelativeSource={RelativeSource TemplatedParent},
+                                        SelectedDate="{Binding RelativeSource={RelativeSource TemplatedParent},
                                                                        Path=SelectedDate,
                                                                        Mode=TwoWay}"
                                         shadui:ElementAssist.FocusOnLoad="True"

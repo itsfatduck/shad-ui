@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d"
@@ -20,7 +20,7 @@
                     Classes="Clearable"
                     HorizontalAlignment="Left"
                     Text="{Binding SearchString, Mode=TwoWay}"
-                    Watermark="Filter emails..."
+                    PlaceholderText="Filter emails..."
                     Width="384"
                     shadui:ControlAssist.ShowProgress="{Binding IsSearching}">
                     <TextBox.InnerRightContent>

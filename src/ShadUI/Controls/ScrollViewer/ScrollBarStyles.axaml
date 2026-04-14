@@ -1,4 +1,4 @@
-﻿<Styles
+<Styles
     xmlns="https://github.com/avaloniaui"
     xmlns:shadui="clr-namespace:ShadUI"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -75,8 +75,8 @@
                         Name="PART_PageUpButton">
                         <RepeatButton.IsVisible>
                             <MultiBinding Converter="{x:Static shadui:SidebarScrollerToVisibilityBool.Up}">
-                                <CompiledBinding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
-                                <CompiledBinding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="Minimum" RelativeSource="{RelativeSource TemplatedParent}" />
                             </MultiBinding>
                         </RepeatButton.IsVisible>
                         <PathIcon
@@ -99,8 +99,8 @@
                         Name="PART_PageDownButton">
                         <RepeatButton.IsVisible>
                             <MultiBinding Converter="{x:Static shadui:SidebarScrollerToVisibilityBool.Down}">
-                                <CompiledBinding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
-                                <CompiledBinding Path="Maximum" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="Value" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="Maximum" RelativeSource="{RelativeSource TemplatedParent}" />
                             </MultiBinding>
                         </RepeatButton.IsVisible>
                         <PathIcon

@@ -1,7 +1,6 @@
-﻿using Avalonia;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.VisualTree;
 
 // ReSharper disable once CheckNamespace
 namespace ShadUI;
@@ -27,8 +26,7 @@ internal static class ApplicationExt
         if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) return desktop.MainWindow;
         if (app.ApplicationLifetime is ISingleViewApplicationLifetime viewApp)
         {
-            var visualRoot = viewApp.MainView?.GetVisualRoot();
-            return visualRoot as TopLevel;
+            return viewApp.MainView is null ? null : TopLevel.GetTopLevel(viewApp.MainView);
         }
 
         return null;

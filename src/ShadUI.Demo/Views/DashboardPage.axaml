@@ -186,14 +186,16 @@
                                                         FontWeight="DemiBold"
                                                         Margin="24,24,24,12"
                                                         Text="Overview" />
-                                                    <avalonia:CartesianChart
-                                                        Margin="12,0,12,12"
-                                                        Name="CartesianChart1"
-                                                        Series="{Binding Series}"
-                                                        TooltipTextPaint="{Binding TooltipTextPaint}"
-                                                        TooltipTextSize="14"
-                                                        XAxes="{Binding XAxes}"
-                                                        YAxes="{Binding YAxes}" />
+                                                    <!--TODO: Pending Avalonia 12 support - remove LiveCharts workaround after validation.-->
+                                                    <!--<avalonia:CartesianChart -->
+                                                    <!--    Margin="12,0,12,12"-->
+                                                    <!--    Name="CartesianChart1"-->
+                                                    <!--    Series="{Binding Series}"-->
+                                                    <!--    TooltipTextPaint="{Binding TooltipTextPaint}"-->
+                                                    <!--    TooltipTextSize="14"-->
+                                                    <!--    XAxes="{Binding XAxes}"-->
+                                                    <!--    YAxes="{Binding YAxes}" />-->
+                                                    
                                                 </DockPanel>
                                             </Border>
                                             <Border
@@ -328,7 +330,7 @@
                                                         FontWeight="DemiBold"
                                                         Margin="24,24,24,12"
                                                         Text="Overview" />
-                                                    <avalonia:CartesianChart
+                                                    <!--<avalonia:CartesianChart
                                                         Margin="12,0,12,12"
                                                         Name="CartesianChart2"
                                                         Series="{Binding Series}"
@@ -336,6 +338,8 @@
                                                         TooltipTextSize="14"
                                                         XAxes="{Binding XAxes}"
                                                         YAxes="{Binding YAxes}" />
+                                                    -->
+                                                    <TextBlock Text="TODO: Pending Avalonia 12 support - remove LiveCharts workaround after validation." />
                                                 </DockPanel>
                                             </Border>
                                             <Border

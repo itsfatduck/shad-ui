@@ -28,16 +28,19 @@ public sealed class DialogManager
         {
             if (control is SimpleDialog simple)
             {
-                var existingSimpleDialog = Dialogs.FirstOrDefault(x => x.Key is SimpleDialog d && d.Id == simple.Id)
-                    .Key;
-
-                if (existingSimpleDialog is not null) return;
+                foreach (var kv in Dialogs)
+                {
+                    if (kv.Key is SimpleDialog d && d.Id == simple.Id)
+                        return;
+                }
             }
 
-            var existingCustomDialog =
-                Dialogs.FirstOrDefault(x =>
-                    x.Key.DataContext?.GetType() == control.DataContext?.GetType()).Key;
-            if (existingCustomDialog is not null) return;
+            var controlContextType = control.DataContext?.GetType();
+            foreach (var kv in Dialogs)
+            {
+                if (kv.Key.DataContext?.GetType() == controlContextType)
+                    return;
+            }
 
             var last = Dialogs.Last();
             if (last.Key != control)

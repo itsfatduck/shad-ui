@@ -14,7 +14,7 @@ public class WidthToVisibilityConverter : IMultiValueConverter
     /// <summary>
     ///     Gets the singleton instance of the <see cref="WidthToVisibilityConverter" />.
     /// </summary>
-    public static WidthToVisibilityConverter Instance => new();
+    public static readonly WidthToVisibilityConverter Instance = new();
 
     /// <summary>
     ///     Converts the width and breakpoint to a visibility value.

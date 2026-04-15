@@ -104,26 +104,35 @@ public class ToastHost : ItemsControl
 
     private void OnPositionChanged(ToastPosition position)
     {
-        HorizontalAlignment = position switch
+        switch (position)
         {
-            ToastPosition.BottomRight => HorizontalAlignment.Right,
-            ToastPosition.BottomCenter => HorizontalAlignment.Center,
-            ToastPosition.BottomLeft => HorizontalAlignment.Left,
-            ToastPosition.TopRight => HorizontalAlignment.Right,
-            ToastPosition.TopCenter => HorizontalAlignment.Center,
-            ToastPosition.TopLeft => HorizontalAlignment.Left,
-            _ => throw new ArgumentOutOfRangeException()
-        };
-        VerticalAlignment = position switch
-        {
-            ToastPosition.BottomRight => VerticalAlignment.Bottom,
-            ToastPosition.BottomCenter => VerticalAlignment.Bottom,
-            ToastPosition.BottomLeft => VerticalAlignment.Bottom,
-            ToastPosition.TopRight => VerticalAlignment.Top,
-            ToastPosition.TopCenter => VerticalAlignment.Top,
-            ToastPosition.TopLeft => VerticalAlignment.Top,
-            _ => throw new ArgumentOutOfRangeException()
-        };
+            case ToastPosition.BottomRight:
+                HorizontalAlignment = HorizontalAlignment.Right;
+                VerticalAlignment = VerticalAlignment.Bottom;
+                break;
+            case ToastPosition.BottomCenter:
+                HorizontalAlignment = HorizontalAlignment.Center;
+                VerticalAlignment = VerticalAlignment.Bottom;
+                break;
+            case ToastPosition.BottomLeft:
+                HorizontalAlignment = HorizontalAlignment.Left;
+                VerticalAlignment = VerticalAlignment.Bottom;
+                break;
+            case ToastPosition.TopRight:
+                HorizontalAlignment = HorizontalAlignment.Right;
+                VerticalAlignment = VerticalAlignment.Top;
+                break;
+            case ToastPosition.TopCenter:
+                HorizontalAlignment = HorizontalAlignment.Center;
+                VerticalAlignment = VerticalAlignment.Top;
+                break;
+            case ToastPosition.TopLeft:
+                HorizontalAlignment = HorizontalAlignment.Left;
+                VerticalAlignment = VerticalAlignment.Top;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(position), position, null);
+        }
     }
 
     private static void OnManagerPropertyChanged(AvaloniaObject sender,

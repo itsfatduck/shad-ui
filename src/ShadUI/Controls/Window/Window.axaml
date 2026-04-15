@@ -190,7 +190,7 @@
                                     VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
                             </DockPanel>
                             <ItemsControl
-                                IsHitTestVisible="False"
+                                IsHitTestVisible="True"
                                 ItemsSource="{Binding Hosts, RelativeSource={RelativeSource AncestorType={x:Type shadui:Window}}}"
                                 ZIndex="1000">
                                 <ItemsControl.ItemsPanel>

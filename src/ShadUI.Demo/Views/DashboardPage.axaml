@@ -5,7 +5,6 @@
     x:Class="ShadUI.Demo.Views.DashboardPage"
     x:DataType="viewModels:DashboardViewModel"
     xmlns="https://github.com/avaloniaui"
-    xmlns:avalonia="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dashboard="clr-namespace:ShadUI.Demo.Controls.Dashboard"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,6 +12,7 @@
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:ShadUI.Demo.ViewModels"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Restore LiveCharts: add on UserControl — xmlns:avalonia="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia" -->
     <DockPanel LastChildFill="True">
         <Grid
             ColumnDefinitions="* Auto"
@@ -179,6 +179,9 @@
                                                 BoxShadow="{DynamicResource Shadow}"
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Margin="8">
+                                                <Border.CacheMode>
+                                                    <BitmapCache RenderAtScale="1" />
+                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <TextBlock
                                                         DockPanel.Dock="Top"
@@ -206,6 +209,9 @@
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Grid.Column="1"
                                                 Margin="8">
+                                                <Border.CacheMode>
+                                                    <BitmapCache RenderAtScale="1" />
+                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <StackPanel
                                                         DockPanel.Dock="Top"
@@ -323,6 +329,9 @@
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Margin="8"
                                                 MinHeight="360">
+                                                <Border.CacheMode>
+                                                    <BitmapCache RenderAtScale="1" />
+                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <TextBlock
                                                         DockPanel.Dock="Top"
@@ -350,6 +359,9 @@
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Grid.Row="1"
                                                 Margin="8">
+                                                <Border.CacheMode>
+                                                    <BitmapCache RenderAtScale="1" />
+                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <StackPanel
                                                         DockPanel.Dock="Top"

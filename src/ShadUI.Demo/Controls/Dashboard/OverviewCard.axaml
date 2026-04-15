@@ -36,6 +36,9 @@
                         CornerRadius="{DynamicResource 2XlCornerRadius}"
                         Margin="8"
                         MinWidth="150">
+                        <Border.CacheMode>
+                            <BitmapCache RenderAtScale="1" />
+                        </Border.CacheMode>
                         <StackPanel Margin="24">
                             <Grid ColumnDefinitions="* Auto">
                                 <TextBlock Classes="Small" Text="{TemplateBinding Title}" />

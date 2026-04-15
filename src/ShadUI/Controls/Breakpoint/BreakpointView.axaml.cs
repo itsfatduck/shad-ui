@@ -13,7 +13,7 @@ public class BreakpointView : Grid
     ///     Defines the <see cref="Breakpoint" /> property.
     /// </summary>
     public static readonly StyledProperty<Breakpoint> BreakpointProperty =
-        AvaloniaProperty.Register<BreakpointViewPort, Breakpoint>(nameof(Breakpoint));
+        AvaloniaProperty.Register<BreakpointView, Breakpoint>(nameof(Breakpoint));
 
     /// <summary>
     ///     Gets or sets the breakpoint for the view.
@@ -27,7 +27,7 @@ public class BreakpointView : Grid
     /// <summary>
     ///     Defines the <see cref="Invert" /> property.
     /// </summary>
-    public static readonly StyledProperty<bool> InvertProperty = AvaloniaProperty.Register<BreakpointViewPort, bool>(
+    public static readonly StyledProperty<bool> InvertProperty = AvaloniaProperty.Register<BreakpointView, bool>(
         nameof(Invert));
 
     /// <summary>
@@ -37,5 +37,12 @@ public class BreakpointView : Grid
     {
         get => GetValue(InvertProperty);
         set => SetValue(InvertProperty, value);
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="BreakpointView" /> class.
+    /// </summary>
+    public BreakpointView()
+    {
     }
 }

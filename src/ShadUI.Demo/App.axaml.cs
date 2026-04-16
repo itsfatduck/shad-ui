@@ -1,7 +1,7 @@
-using System.Threading;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using System.Threading;
 
 namespace ShadUI.Demo;
 
@@ -17,13 +17,18 @@ public class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
+        if (ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            base.OnFrameworkInitializationCompleted();
+            return;
+        }
 
         _appMutex = new Mutex(true, "ShadUISingleInstanceMutex", out var createdNew);
         if (!createdNew)
         {
             var instanceDialog = new InstanceDialog();
             instanceDialog.Show();
+            base.OnFrameworkInitializationCompleted();
             return;
         }
 

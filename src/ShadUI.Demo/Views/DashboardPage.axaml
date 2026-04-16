@@ -179,9 +179,6 @@
                                                 BoxShadow="{DynamicResource Shadow}"
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Margin="8">
-                                                <Border.CacheMode>
-                                                    <BitmapCache RenderAtScale="1" />
-                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <TextBlock
                                                         DockPanel.Dock="Top"
@@ -190,14 +187,15 @@
                                                         Margin="24,24,24,12"
                                                         Text="Overview" />
                                                     <!--TODO: Pending Avalonia 12 support - remove LiveCharts workaround after validation.-->
-                                                    <!--<avalonia:CartesianChart -->
-                                                    <!--    Margin="12,0,12,12"-->
-                                                    <!--    Name="CartesianChart1"-->
-                                                    <!--    Series="{Binding Series}"-->
-                                                    <!--    TooltipTextPaint="{Binding TooltipTextPaint}"-->
-                                                    <!--    TooltipTextSize="14"-->
-                                                    <!--    XAxes="{Binding XAxes}"-->
-                                                    <!--    YAxes="{Binding YAxes}" />-->
+                                                    <!--<avalonia:CartesianChart 
+                                                        Margin="12,0,12,12"
+                                                        Name="CartesianChart1"
+                                                        Series="{Binding Series}"
+                                                        TooltipTextPaint="{Binding TooltipTextPaint}"
+                                                        TooltipTextSize="14"
+                                                        XAxes="{Binding XAxes}"
+                                                        YAxes="{Binding YAxes}" />
+                                                        -->
                                                     
                                                 </DockPanel>
                                             </Border>
@@ -209,9 +207,6 @@
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Grid.Column="1"
                                                 Margin="8">
-                                                <Border.CacheMode>
-                                                    <BitmapCache RenderAtScale="1" />
-                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <StackPanel
                                                         DockPanel.Dock="Top"
@@ -329,9 +324,6 @@
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Margin="8"
                                                 MinHeight="360">
-                                                <Border.CacheMode>
-                                                    <BitmapCache RenderAtScale="1" />
-                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <TextBlock
                                                         DockPanel.Dock="Top"
@@ -348,7 +340,6 @@
                                                         XAxes="{Binding XAxes}"
                                                         YAxes="{Binding YAxes}" />
                                                     -->
-                                                    <TextBlock Text="TODO: Pending Avalonia 12 support - remove LiveCharts workaround after validation." />
                                                 </DockPanel>
                                             </Border>
                                             <Border
@@ -359,9 +350,6 @@
                                                 CornerRadius="{DynamicResource 2XlCornerRadius}"
                                                 Grid.Row="1"
                                                 Margin="8">
-                                                <Border.CacheMode>
-                                                    <BitmapCache RenderAtScale="1" />
-                                                </Border.CacheMode>
                                                 <DockPanel>
                                                     <StackPanel
                                                         DockPanel.Dock="Top"

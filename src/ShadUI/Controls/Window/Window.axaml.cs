@@ -1,6 +1,3 @@
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -11,6 +8,9 @@ using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using ShadUI.Utilities.MacOS;
+using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 
 // ReSharper disable once CheckNamespace
 namespace ShadUI;
@@ -380,14 +380,14 @@ public class Window : Avalonia.Controls.Window
             titleBar.PointerPressed += OnTitleBarPointerPressed;
             titleBar.DoubleTapped += OnMaximizeButtonClicked;
         }
-        
+
+        if (e.NameScope.Get<Panel>("PART_Root") is { } rootPanel)
+        {
+            this.AddResizeGrip(rootPanel);
+        }
+
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
         {
-            if (e.NameScope.Get<Panel>("PART_Root") is { } rootPanel)
-            {
-                this.AddResizeGrip(rootPanel);
-            }
-
             if (RootCornerRadius == default)
             {
                 RootCornerRadius = new CornerRadius(10);
@@ -424,7 +424,7 @@ public class Window : Avalonia.Controls.Window
     private void OnMaximizeButtonClicked(object? sender, RoutedEventArgs args)
     {
         if (!CanMaximize || !CanResize || WindowState == WindowState.FullScreen) return;
-        
+
         WindowState = WindowState == WindowState.Maximized
             ? WindowState.Normal
             : WindowState.Maximized;
@@ -504,9 +504,7 @@ public class Window : Avalonia.Controls.Window
             case WindowState.Maximized:
                 ToggleMaxButtonVisibility(CanMaximize);
                 RootCornerRadius = _lastCornerRadius;
-                Margin = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-                    ? new Thickness(7)
-                    : new Thickness(0);
+                Margin = new Thickness(0);
                 break;
             case WindowState.Normal:
                 ToggleMaxButtonVisibility(CanMaximize);

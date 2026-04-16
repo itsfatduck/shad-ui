@@ -273,7 +273,7 @@
                         <TextBlock
                             Foreground="{TemplateBinding Foreground}"
                             Margin="4,0,0,0"
-                            Text="{Binding Key}" />
+                            Text="{CompiledBinding Key}" />
                         <TextBlock
                             Foreground="{TemplateBinding Foreground}"
                             IsVisible="{TemplateBinding IsItemCountVisible}"

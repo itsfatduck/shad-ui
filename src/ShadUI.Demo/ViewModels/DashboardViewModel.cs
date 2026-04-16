@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.Input;
 
 namespace ShadUI.Demo.ViewModels;
 
@@ -8,6 +7,10 @@ public sealed partial class DashboardViewModel : ViewModelBase, INavigable
 {
     /*
     // TODO: Pending Avalonia 12 support - re-enable dashboard chart integration.
+    private readonly SKTypeface _typeface;
+
+    [ObservableProperty]
+    private static SolidColorPaint _tooltipTextPaint = null!;
     */
     private readonly PageManager _pageManager;
 
@@ -16,11 +19,13 @@ public sealed partial class DashboardViewModel : ViewModelBase, INavigable
     /// </summary>
     public ThemeWatcher ThemeWatcher { get; }
 
+
+
     public DashboardViewModel(PageManager pageManager, ThemeWatcher themeWatcher)
     {
         _pageManager = pageManager;
         ThemeWatcher = themeWatcher;
-        
+
         /*
         // TODO: Pending Avalonia 12 support - restore chart data/series setup when chart library is compatible.
         ThemeWatcher.ThemeChanged += (_, colors) =>

@@ -16,7 +16,7 @@ public sealed partial class SmoothScrollViewModel : ViewModelBase, INavigable
     {
         _pageManager = pageManager;
         var path = Path.Combine(AppContext.BaseDirectory, "views", "SmoothScrollPage.axaml");
-        UsageCode = path.ExtractByLineRange(86, 115).CleanIndentation();
+        UsageCode = path.ExtractByLineRange(78, 107).CleanIndentation();
         
         for (int i = 1; i <= 324; i++)
         {

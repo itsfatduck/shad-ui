@@ -36,9 +36,12 @@ is use for x:TypeArguments="system:Double" DO NOT REMOVE -->
                             </ScrollContentPresenter.Transitions>
                             <ScrollContentPresenter.GestureRecognizers>
                                 <ScrollGestureRecognizer
-                                    CanHorizontallyScroll="{Binding CanHorizontallyScroll, ElementName=PART_ContentPresenter}"
-                                    CanVerticallyScroll="{Binding CanVerticallyScroll, ElementName=PART_ContentPresenter}"
-                                    IsScrollInertiaEnabled="{Binding (ScrollViewer.IsScrollInertiaEnabled), ElementName=PART_ContentPresenter}" />
+                                    CanHorizontallyScroll="{CompiledBinding CanHorizontallyScroll,
+                                        ElementName=PART_ContentPresenter}"
+                                    CanVerticallyScroll="{CompiledBinding CanVerticallyScroll,
+                                        ElementName=PART_ContentPresenter}"
+                                    IsScrollInertiaEnabled="{CompiledBinding (ScrollViewer.IsScrollInertiaEnabled),
+                                        ElementName=PART_ContentPresenter}" />
                             </ScrollContentPresenter.GestureRecognizers>
                         </ScrollContentPresenter>
                     </Panel>
@@ -76,17 +79,12 @@ is use for x:TypeArguments="system:Double" DO NOT REMOVE -->
     </Style>
     <Style Selector="ScrollViewer.Stack">
         <Setter Property="Background" Value="Transparent" />
+        <Setter Property="shadui:ScrollOpacityMaskAssist.IsEnabled" Value="True" />
         <Style Selector="^ /template/ Grid#BasicScroll">
             <Setter Property="IsVisible" Value="False" />
         </Style>
         <Style Selector="^ /template/ Panel#StackScrollPanel">
             <Setter Property="IsVisible" Value="True" />
-        </Style>
-        <Style Selector="^ /template/ Panel#InnerPanel">
-            <Setter Property="OpacityMask" Value="{x:Null}" />
-        </Style>
-        <Style Selector="^ /template/ ScrollContentPresenter#PART_ContentPresenter">
-            <Setter Property="OpacityMask" Value="{x:Null}" />
         </Style>
     </Style>
 </Styles>

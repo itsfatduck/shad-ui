@@ -120,13 +120,13 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="{x:Type Color}">
                                         <Border
-                                            AutomationProperties.Name="{Binding Converter={x:Static shadui:BasicConverters.ColorToDisplayNameConverter}}"
+                                            AutomationProperties.Name="{CompiledBinding ., Converter={x:Static shadui:BasicConverters.ColorToDisplayNameConverter}}"
                                             CornerRadius="{DynamicResource MdCornerRadius}"
                                             HorizontalAlignment="Stretch"
-                                            ToolTip.Tip="{Binding Converter={x:Static shadui:BasicConverters.ColorToDisplayNameConverter}}"
+                                            ToolTip.Tip="{CompiledBinding ., Converter={x:Static shadui:BasicConverters.ColorToDisplayNameConverter}}"
                                             VerticalAlignment="Stretch">
                                             <Border.Background>
-                                                <SolidColorBrush Color="{Binding}" />
+                                                <SolidColorBrush Color="{CompiledBinding .}" />
                                             </Border.Background>
                                         </Border>
                                     </DataTemplate>

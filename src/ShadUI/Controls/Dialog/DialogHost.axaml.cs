@@ -1,6 +1,3 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -9,7 +6,9 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Reactive;
-using Avalonia.VisualTree;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace ShadUI;
@@ -158,18 +157,16 @@ public class DialogHost : TemplatedControl, IDisposable
         set => SetValue(CanDismissWithBackgroundClickProperty, value);
     }
 
-    /// <summary>
-    ///     Called when the control template is applied to set up event handlers and animations.
-    /// </summary>
-    /// <param name="e">The template applied event arguments.</param>
     /// <inheritdoc />
     protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
     {
         base.OnAttachedToVisualTree(e);
-        SyncHostHitTestVisibility();
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    ///     Called when the control template is applied to set up event handlers and animations.
+    /// </summary>
+    /// <param name="e">The template applied event arguments.</param>
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
@@ -259,7 +256,6 @@ public class DialogHost : TemplatedControl, IDisposable
         manager.OnDialogShown += ManagerOnDialogShown;
         manager.OnDialogClosed += ManagerOnDialogClosed;
         manager.AllowDismissChanged += AllowDismissChanged;
-        SyncHostHitTestVisibility();
     }
 
     private void DetachManagerEvents(DialogManager manager)
@@ -282,7 +278,6 @@ public class DialogHost : TemplatedControl, IDisposable
         IsDialogOpen = true;
         HasOpenDialog = true;
         Owner.HasOpenDialog = true;
-        SyncHostHitTestVisibility();
     }
 
     private async void ManagerOnDialogClosed(object? sender, DialogClosedEventArgs e)
@@ -297,26 +292,14 @@ public class DialogHost : TemplatedControl, IDisposable
 
             HasOpenDialog = Manager.Dialogs.Count > 0;
             Owner.HasOpenDialog = Manager.Dialogs.Count > 0;
-            SyncHostHitTestVisibility();
 
             await Task.Delay(200); // Allow animations to complete
             if (!HasOpenDialog) Dialog = null;
-            SyncHostHitTestVisibility();
         }
         catch (Exception)
         {
             //ignore
         }
-    }
-
-    /// <summary>
-    ///     When Hosts ItemsControl is hit-test visible, the dialog surface must not block the window
-    ///     when no dialog is shown. Toggle host visibility so pointer events reach content below.
-    /// </summary>
-    private void SyncHostHitTestVisibility()
-    {
-        var hasDialogSurface = Dialog != null || (Manager?.Dialogs.Count ?? 0) > 0;
-        IsHitTestVisible = hasDialogSurface;
     }
 
     private void AllowDismissChanged(object? sender, bool e)

@@ -1,8 +1,5 @@
-﻿using Avalonia;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Media;
-using Avalonia.VisualTree;
 using ShadUI.Demo.ViewModels;
 
 namespace ShadUI.Demo.Views;
@@ -42,25 +39,8 @@ public partial class DashboardPage : UserControl
                 { IsAutomaticUpdate = false, Throttling = false });
         });
         */
-        // Invalidate BitmapCache for all Border elements when theme changes
-        // This ensures shadows and backgrounds render with correct theme colors
-        InvalidateBitmapCaches(this);
     }
 
-    private static void InvalidateBitmapCaches(Visual visual)
-    {
-        foreach (var child in visual.GetVisualChildren())
-        {
-            if (child is Border border && border.CacheMode is not null)
-            {
-                // Clear and restore cache to force re-render
-                var cache = border.CacheMode;
-                border.CacheMode = null;
-                border.CacheMode = cache;
-            }
-            InvalidateBitmapCaches(child);
-        }
-    }
 
-    
+
 }

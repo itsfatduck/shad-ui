@@ -1,3 +1,7 @@
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
@@ -6,9 +10,6 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Reactive;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 // ReSharper disable once CheckNamespace
 namespace ShadUI;
@@ -22,11 +23,14 @@ namespace ShadUI;
 public class DialogHost : TemplatedControl, IDisposable
 {
     private bool _disposed;
+
     /// <summary>
     ///     Defines the <see cref="Owner" /> property.
     /// </summary>
-    public static readonly StyledProperty<Window?> OwnerProperty =
-        AvaloniaProperty.Register<DialogHost, Window?>(nameof(Owner));
+    public static readonly StyledProperty<Window?> OwnerProperty = AvaloniaProperty.Register<
+        DialogHost,
+        Window?
+    >(nameof(Owner));
 
     /// <summary>
     ///     Gets or sets the owner window of the dialog host.
@@ -55,8 +59,10 @@ public class DialogHost : TemplatedControl, IDisposable
     /// <summary>
     ///     Defines the <see cref="Dialog" /> property.
     /// </summary>
-    internal static readonly StyledProperty<object?> DialogProperty =
-        AvaloniaProperty.Register<DialogHost, object?>(nameof(Dialog));
+    internal static readonly StyledProperty<object?> DialogProperty = AvaloniaProperty.Register<
+        DialogHost,
+        object?
+    >(nameof(Dialog));
 
     /// <summary>
     ///     Gets or sets the current dialog content.
@@ -70,8 +76,10 @@ public class DialogHost : TemplatedControl, IDisposable
     /// <summary>
     ///     Defines the <see cref="IsDialogOpen" /> property.
     /// </summary>
-    internal static readonly StyledProperty<bool> IsDialogOpenProperty =
-        AvaloniaProperty.Register<DialogHost, bool>(nameof(IsDialogOpen));
+    internal static readonly StyledProperty<bool> IsDialogOpenProperty = AvaloniaProperty.Register<
+        DialogHost,
+        bool
+    >(nameof(IsDialogOpen));
 
     /// <summary>
     ///     Gets or sets whether a dialog is currently open.
@@ -115,8 +123,10 @@ public class DialogHost : TemplatedControl, IDisposable
     /// <summary>
     ///     Defines the <see cref="Dismissible" /> property.
     /// </summary>
-    internal static readonly StyledProperty<bool> DismissibleProperty =
-        AvaloniaProperty.Register<DialogHost, bool>(nameof(Dismissible), true);
+    internal static readonly StyledProperty<bool> DismissibleProperty = AvaloniaProperty.Register<
+        DialogHost,
+        bool
+    >(nameof(Dismissible), true);
 
     /// <summary>
     ///     Gets or sets whether the dialog can be dismissed.
@@ -130,8 +140,10 @@ public class DialogHost : TemplatedControl, IDisposable
     /// <summary>
     ///     Defines the <see cref="HasOpenDialog" /> property.
     /// </summary>
-    internal static readonly StyledProperty<bool> HasOpenDialogProperty =
-        AvaloniaProperty.Register<DialogHost, bool>(nameof(HasOpenDialog));
+    internal static readonly StyledProperty<bool> HasOpenDialogProperty = AvaloniaProperty.Register<
+        DialogHost,
+        bool
+    >(nameof(HasOpenDialog));
 
     /// <summary>
     ///     Gets or sets whether the dialog can be dismissed.
@@ -157,12 +169,6 @@ public class DialogHost : TemplatedControl, IDisposable
         set => SetValue(CanDismissWithBackgroundClickProperty, value);
     }
 
-    /// <inheritdoc />
-    protected override void OnAttachedToVisualTree(VisualTreeAttachmentEventArgs e)
-    {
-        base.OnAttachedToVisualTree(e);
-    }
-
     /// <summary>
     ///     Called when the control template is applied to set up event handlers and animations.
     /// </summary>
@@ -174,7 +180,8 @@ public class DialogHost : TemplatedControl, IDisposable
         {
             background.PointerPressed += (_, _) =>
             {
-                if (CanDismissWithBackgroundClick) CloseDialog();
+                if (CanDismissWithBackgroundClick)
+                    CloseDialog();
             };
         }
 
@@ -194,10 +201,12 @@ public class DialogHost : TemplatedControl, IDisposable
     {
         base.OnPointerPressed(e);
 
-        if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime
+        if (
+            Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime
             {
                 MainWindow: not null
-            } desktop)
+            } desktop
+        )
         {
             desktop.MainWindow.BeginMoveDrag(e);
         }
@@ -207,37 +216,46 @@ public class DialogHost : TemplatedControl, IDisposable
     {
         if (Owner is not null && Owner.CanMaximize)
         {
-            Owner.WindowState = Owner.WindowState == WindowState.Maximized
-                ? WindowState.Normal
-                : WindowState.Maximized;
+            Owner.WindowState =
+                Owner.WindowState == WindowState.Maximized
+                    ? WindowState.Normal
+                    : WindowState.Maximized;
         }
     }
 
     private void CloseDialog()
     {
-        if (!Dismissible) return;
+        if (!Dismissible)
+            return;
 
         IsDialogOpen = false;
 
         Manager?.RemoveLast();
         Manager?.OpenLast();
 
-        if (Owner is not null) Owner.HasOpenDialog = false;
+        if (Owner is not null)
+            Owner.HasOpenDialog = false;
     }
 
     static DialogHost()
     {
         ManagerProperty.Changed.Subscribe(
             new AnonymousObserver<AvaloniaPropertyChangedEventArgs<DialogManager?>>(x =>
-                OnManagerPropertyChanged(x.Sender, x)));
+                OnManagerPropertyChanged(x.Sender, x)
+            )
+        );
     }
 
-    private static void OnManagerPropertyChanged(AvaloniaObject sender,
-        AvaloniaPropertyChangedEventArgs propChanged)
+    private static void OnManagerPropertyChanged(
+        AvaloniaObject sender,
+        AvaloniaPropertyChangedEventArgs propChanged
+    )
     {
         if (sender is not DialogHost host)
         {
-            throw new NullReferenceException("Dependency object is not of valid type " + nameof(DialogHost));
+            throw new NullReferenceException(
+                "Dependency object is not of valid type " + nameof(DialogHost)
+            );
         }
 
         if (propChanged.OldValue is DialogManager oldManager)
@@ -267,13 +285,16 @@ public class DialogHost : TemplatedControl, IDisposable
 
     private void ManagerOnDialogShown(object? sender, DialogShownEventArgs e)
     {
-        if (Manager is null || Owner is null) return;
+        if (Manager is null || Owner is null)
+            return;
 
         Dialog = e.Control;
         Dismissible = e.Options.Dismissible;
 
-        if (e.Options.MaxWidth > 0) DialogMaxWidth = e.Options.MaxWidth;
-        if (e.Options.MinWidth > 0) DialogMinWidth = e.Options.MinWidth;
+        if (e.Options.MaxWidth > 0)
+            DialogMaxWidth = e.Options.MaxWidth;
+        if (e.Options.MinWidth > 0)
+            DialogMinWidth = e.Options.MinWidth;
 
         IsDialogOpen = true;
         HasOpenDialog = true;
@@ -284,17 +305,21 @@ public class DialogHost : TemplatedControl, IDisposable
     {
         try
         {
-            if (Manager is null || Owner is null) return;
-            if (e.Control != Dialog) return;
+            if (Manager is null || Owner is null)
+                return;
+            if (e.Control != Dialog)
+                return;
 
             IsDialogOpen = false;
-            if (e.ReplaceExisting) return;
+            if (e.ReplaceExisting)
+                return;
 
             HasOpenDialog = Manager.Dialogs.Count > 0;
             Owner.HasOpenDialog = Manager.Dialogs.Count > 0;
 
             await Task.Delay(200); // Allow animations to complete
-            if (!HasOpenDialog) Dialog = null;
+            if (!HasOpenDialog)
+                Dialog = null;
         }
         catch (Exception)
         {
@@ -304,7 +329,8 @@ public class DialogHost : TemplatedControl, IDisposable
 
     private void AllowDismissChanged(object? sender, bool e)
     {
-        if (Manager is null || Manager.Dialogs.Count == 0) return;
+        if (Manager is null || Manager.Dialogs.Count == 0)
+            return;
 
         var firstDialog = Manager.Dialogs.First();
         Dismissible = firstDialog.Value.Dismissible || e;
@@ -315,7 +341,8 @@ public class DialogHost : TemplatedControl, IDisposable
     /// </summary>
     public void Dispose()
     {
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         if (Manager is not null)
         {

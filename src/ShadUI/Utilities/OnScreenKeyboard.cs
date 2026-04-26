@@ -24,37 +24,52 @@ internal static class OnScreenKeyboard
 
     public static void Integrate()
     {
-        if (_alreadyDone) return;
+        if (_alreadyDone)
+            return;
 
         _alreadyDone = true;
 
-        Control.LoadedEvent.AddClassHandler<TopLevel>((s, _) =>
-        {
-            var input = s.InputPane;
-            if (input == null) return;
+        Control.LoadedEvent.AddClassHandler<TopLevel>(
+            (s, _) =>
+            {
+                var input = s.InputPane;
+                if (input == null)
+                    return;
 
-            TopLevelMap[input] = s;
-            input.StateChanged += InputPaneStateChanged;
-        }, handledEventsToo: true);
+                TopLevelMap[input] = s;
+                input.StateChanged += InputPaneStateChanged;
+            },
+            handledEventsToo: true
+        );
 
-        Control.UnloadedEvent.AddClassHandler<TopLevel>((s, _) =>
-        {
-            var input = s.InputPane;
-            if (input == null) return;
+        Control.UnloadedEvent.AddClassHandler<TopLevel>(
+            (s, _) =>
+            {
+                var input = s.InputPane;
+                if (input == null)
+                    return;
 
-            input.StateChanged -= InputPaneStateChanged;
-            TopLevelMap.Remove(input);
-        }, handledEventsToo: true);
+                input.StateChanged -= InputPaneStateChanged;
+                TopLevelMap.Remove(input);
+            },
+            handledEventsToo: true
+        );
 
         _throttleTimer = new Timer(HandleKeyboardEvent, null, Timeout.Infinite, Timeout.Infinite);
 
-        InputElement.PointerPressedEvent.AddClassHandler<TextBox>((t, e) =>
-        {
-            if (e.Pointer.Type == PointerType.Touch) QueueKeyboardEvent(t, true);
-        }, handledEventsToo: true);
+        InputElement.PointerPressedEvent.AddClassHandler<TextBox>(
+            (t, e) =>
+            {
+                if (e.Pointer.Type == PointerType.Touch)
+                    QueueKeyboardEvent(t, true);
+            },
+            handledEventsToo: true
+        );
 
-        InputElement.LostFocusEvent.AddClassHandler<TextBox>((t, _) => QueueKeyboardEvent(t, false),
-            handledEventsToo: true);
+        InputElement.LostFocusEvent.AddClassHandler<TextBox>(
+            (t, _) => QueueKeyboardEvent(t, false),
+            handledEventsToo: true
+        );
     }
 
     /// <summary>
@@ -97,33 +112,40 @@ internal static class OnScreenKeyboard
             _lastKeyboardEvent.TextBox = null;
         }
 
-        if (textBox == null) return;
+        if (textBox == null)
+            return;
 
         var tl = TopLevel.GetTopLevel(textBox);
-        if (tl == null) return;
+        if (tl == null)
+            return;
 
         var hwnd = tl.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
-        if (hwnd == IntPtr.Zero) return;
+        if (hwnd == IntPtr.Zero)
+            return;
 
         var input = tl.InputPane;
-        if (input == null) return;
+        if (input == null)
+            return;
 
         if (eventState)
         {
-            if (input.State == InputPaneState.Closed) Toggle(hwnd);
+            if (input.State == InputPaneState.Closed)
+                Toggle(hwnd);
         }
         else
         {
-            if (input.State == InputPaneState.Open) Toggle(hwnd);
+            if (input.State == InputPaneState.Open)
+                Toggle(hwnd);
         }
     }
 
     private static void InputPaneStateChanged(object? sender, InputPaneStateEventArgs e)
     {
         var inputPane = (IInputPane)sender!;
-        var tl = TopLevelMap[inputPane];
+        if (!TopLevelMap.TryGetValue(inputPane, out var tl))
+            return;
 
-        if (tl.FocusManager?.GetFocusedElement() is not TextBox ctrl)
+        if (tl?.FocusManager?.GetFocusedElement() is not TextBox ctrl)
         {
             return;
         }
@@ -140,14 +162,16 @@ internal static class OnScreenKeyboard
             var oskBounds = e.EndRect.Translate(tlTopCoords);
 
             var contains = oskBounds.Contains(ctrlBottom);
-            if (!contains) return;
+            if (!contains)
+                return;
 
             var diff = oskBounds.TopLeft - ctrlBottom;
             tl.RenderTransform = new TranslateTransform(0, diff.Y);
         }
         else
         {
-            if (tl.RenderTransform is not null) tl.RenderTransform = null;
+            if (tl.RenderTransform is not null)
+                tl.RenderTransform = null;
         }
     }
 
@@ -163,8 +187,15 @@ internal static class OnScreenKeyboard
             if ((uint)e.HResult == 0x80040154)
             {
                 // Use fully qualified path to prevent command injection via PATH hijacking
-                var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles);
-                var tabTipPath = Path.Combine(programFiles, "Microsoft Shared", "ink", "tabtip.exe");
+                var programFiles = Environment.GetFolderPath(
+                    Environment.SpecialFolder.CommonProgramFiles
+                );
+                var tabTipPath = Path.Combine(
+                    programFiles,
+                    "Microsoft Shared",
+                    "ink",
+                    "tabtip.exe"
+                );
 
                 if (File.Exists(tabTipPath))
                 {
@@ -173,7 +204,7 @@ internal static class OnScreenKeyboard
                     {
                         FileName = tabTipPath,
                         UseShellExecute = false,
-                        CreateNoWindow = true
+                        CreateNoWindow = true,
                     };
                     process.Start();
                 }
@@ -194,12 +225,12 @@ internal static class OnScreenKeyboard
         }
     }
 
-    [ComImport] [Guid("4ce576fa-83dc-4F88-951c-9d0782b4e376")]
-    private class UIHostNoLaunch
-    {
-    }
+    [ComImport]
+    [Guid("4ce576fa-83dc-4F88-951c-9d0782b4e376")]
+    private class UIHostNoLaunch { }
 
-    [ComImport] [Guid("37c994e7-432b-4834-a2f7-dce1f13b834b")]
+    [ComImport]
+    [Guid("37c994e7-432b-4834-a2f7-dce1f13b834b")]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface ITipInvocation
     {

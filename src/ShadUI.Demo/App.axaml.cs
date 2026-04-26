@@ -1,14 +1,16 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using ShadUI.Demo.Services;
 using System.Threading;
 
 namespace ShadUI.Demo;
 
 public class App : Application
 {
-    // ReSharper disable once NotAccessedField.Local
     private static Mutex? _appMutex;
+    private ServiceProvider? _provider;
+    private ChartFontProvider? _chartFontProvider;
 
     public override void Initialize()
     {
@@ -26,24 +28,34 @@ public class App : Application
         _appMutex = new Mutex(true, "ShadUISingleInstanceMutex", out var createdNew);
         if (!createdNew)
         {
-            var instanceDialog = new InstanceDialog();
-            instanceDialog.Show();
+            new InstanceDialog().Show();
             base.OnFrameworkInitializationCompleted();
             return;
         }
 
-        var provider = new ServiceProvider().RegisterDialogs();
 
-        var themeWatcher = provider.GetService<ThemeWatcher>();
+        _provider = new ServiceProvider().RegisterDialogs();
+
+        var themeWatcher = _provider.GetService<ThemeWatcher>();
         themeWatcher.Initialize();
-        var viewModel = provider.GetService<MainWindowViewModel>();
+
+        _chartFontProvider = _provider.GetService<ChartFontProvider>();
+
+        var viewModel = _provider.GetService<MainWindowViewModel>();
         viewModel.Initialize();
 
         var mainWindow = new MainWindow { DataContext = viewModel };
         this.RegisterTrayIconsEvents(mainWindow, viewModel);
 
         desktop.MainWindow = mainWindow;
+
+        desktop.Exit += OnExit;
+
         base.OnFrameworkInitializationCompleted();
     }
 
+    private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+    {
+        _chartFontProvider?.Dispose();
+    }
 }

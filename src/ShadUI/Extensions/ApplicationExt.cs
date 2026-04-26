@@ -21,9 +21,11 @@ internal static class ApplicationExt
     /// </returns>
     public static TopLevel? GetTopLevel(this Application? app)
     {
-        if (app is null) return null;
+        if (app is null)
+            return null;
 
-        if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) return desktop.MainWindow;
+        if (app.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            return desktop.MainWindow;
         if (app.ApplicationLifetime is ISingleViewApplicationLifetime viewApp)
         {
             return viewApp.MainView is null ? null : TopLevel.GetTopLevel(viewApp.MainView);

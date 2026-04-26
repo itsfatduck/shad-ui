@@ -26,7 +26,8 @@ public class ScrollerToOpacityMask : IMultiValueConverter
     ///     This instance creates a gradient that fades from transparent at the top to opaque at the bottom.
     ///     It's typically used when content can be scrolled up.
     /// </remarks>
-    public static ScrollerToOpacityMask Top { get; } = new((x, y) => x > y ? TopBrush : Brushes.White);
+    public static ScrollerToOpacityMask Top { get; } =
+        new((x, y) => x > y ? TopBrush : Brushes.White);
 
     /// <summary>
     ///     Gets the bottom mask instance for creating fade-out effects at the bottom of scrollable content.
@@ -35,7 +36,8 @@ public class ScrollerToOpacityMask : IMultiValueConverter
     ///     This instance creates a gradient that fades from opaque at the top to transparent at the bottom.
     ///     It's typically used when content can be scrolled down.
     /// </remarks>
-    public static ScrollerToOpacityMask Bottom { get; } = new((x, y) => x < y ? BottomBrush : Brushes.White);
+    public static ScrollerToOpacityMask Bottom { get; } =
+        new((x, y) => x < y ? BottomBrush : Brushes.White);
 
     /// <summary>
     ///     The bottom gradient brush that fades from opaque to transparent.
@@ -47,8 +49,8 @@ public class ScrollerToOpacityMask : IMultiValueConverter
         GradientStops =
         [
             new GradientStop(Colors.Black, 0.9),
-            new GradientStop(Colors.Transparent, 1)
-        ]
+            new GradientStop(Colors.Transparent, 1),
+        ],
     };
 
     /// <summary>
@@ -61,8 +63,8 @@ public class ScrollerToOpacityMask : IMultiValueConverter
         GradientStops =
         [
             new GradientStop(Colors.Black, 0.9),
-            new GradientStop(Colors.Transparent, 1)
-        ]
+            new GradientStop(Colors.Transparent, 1),
+        ],
     };
 
     /// <summary>
@@ -87,11 +89,19 @@ public class ScrollerToOpacityMask : IMultiValueConverter
     ///     The first value is typically the current scroll position, and the second is the maximum scroll position.
     ///     Based on the comparison of these values, it returns an appropriate gradient brush for the opacity mask.
     /// </remarks>
-    public object? Convert(IList<object?> values, Type targetType, object? parameter, CultureInfo culture)
+    public object? Convert(
+        IList<object?> values,
+        Type targetType,
+        object? parameter,
+        CultureInfo culture
+    )
     {
-        if (values.Count != 2) return null;
-        if (values[0] is not double valOne) return null;
-        if (values[1] is not double valTwo) return null;
+        if (values.Count != 2)
+            return null;
+        if (values[0] is not double valOne)
+            return null;
+        if (values[1] is not double valTwo)
+            return null;
         return _func(valOne, valTwo);
     }
 }

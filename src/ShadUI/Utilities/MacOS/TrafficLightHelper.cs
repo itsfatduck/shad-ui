@@ -13,7 +13,7 @@ internal static class TrafficLightHelper
     {
         Close = 0,
         Miniaturize = 1,
-        Zoom = 2
+        Zoom = 2,
     }
 
     // Default macOS traffic light positions (distance from edges)

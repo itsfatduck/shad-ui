@@ -29,13 +29,13 @@
                 shadui:ControlAssist.Label="Email" />
             <TextBox
                 Classes="PasswordReveal"
-                PasswordChar="•"
+                PasswordChar="â€¢"
                 Text="{Binding Password, Mode=TwoWay}"
                 PlaceholderText="Enter password"
                 shadui:ControlAssist.Label="Password" />
             <TextBox
                 Classes="PasswordReveal"
-                PasswordChar="•"
+                PasswordChar="â€¢"
                 Text="{Binding ConfirmPassword, Mode=TwoWay}"
                 PlaceholderText="Confirm password"
                 shadui:ControlAssist.Label="Confirm" />

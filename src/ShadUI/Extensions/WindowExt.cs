@@ -4,10 +4,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Chrome;
 using Avalonia.Input;
 using Avalonia.Layout;
 using Avalonia.Media;
-using Avalonia.VisualTree;
 
 // ReSharper disable once CheckNamespace
 namespace ShadUI;
@@ -19,14 +19,19 @@ namespace ShadUI;
 /// </summary>
 public static class WindowExt
 {
-    private static readonly Dictionary<Window, EventHandler<WindowClosingEventArgs>> ClosingHandlers = new();
+    private static readonly Dictionary<
+        Window,
+        EventHandler<WindowClosingEventArgs>
+    > ClosingHandlers = new();
     private static readonly Dictionary<Window, EventHandler?> ClosedHandlers = new();
     private static readonly Dictionary<string, WindowSettings?> Cache = new();
     private static readonly object CacheLock = new();
 
     private static string GetSettingsDirectory()
     {
-        var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        var localAppData = Environment.GetFolderPath(
+            Environment.SpecialFolder.LocalApplicationData
+        );
         var shadUiDir = Path.Combine(localAppData, "ShadUI");
 
         if (!Directory.Exists(shadUiDir))
@@ -47,7 +52,8 @@ public static class WindowExt
     /// </param>
     public static void ManageWindowState(this Window window, string key = "main")
     {
-        if (ClosingHandlers.ContainsKey(window)) return;
+        if (ClosingHandlers.ContainsKey(window))
+            return;
 
         var file = Path.Combine(GetSettingsDirectory(), $"shadui_{key}.txt");
         RestoreWindowState(window, file);
@@ -62,7 +68,7 @@ public static class WindowExt
                     Y = window.Position.Y,
                     Width = window.Width,
                     Height = window.Height,
-                    WindowState = window.WindowState
+                    WindowState = window.WindowState,
                 };
 
                 await SaveWindowSettingsAsync(current, file);
@@ -141,7 +147,8 @@ public static class WindowExt
             }
         }
 
-        if (state == null) return;
+        if (state == null)
+            return;
 
         window.Position = new PixelPoint(state.X, state.Y);
 
@@ -151,9 +158,8 @@ public static class WindowExt
             window.Height = state.Height;
         }
 
-        window.WindowState = state.WindowState == WindowState.Minimized
-            ? WindowState.Normal
-            : state.WindowState;
+        window.WindowState =
+            state.WindowState == WindowState.Minimized ? WindowState.Normal : state.WindowState;
     }
 
     private static WindowSettings? LoadWindowSettings(string file)
@@ -170,7 +176,8 @@ public static class WindowExt
         {
             var lineSpan = line.AsSpan();
             var equalsIndex = lineSpan.IndexOf('=');
-            if (equalsIndex <= 0 || equalsIndex >= lineSpan.Length - 1) continue;
+            if (equalsIndex <= 0 || equalsIndex >= lineSpan.Length - 1)
+                continue;
 
             var keySpan = lineSpan.Slice(0, equalsIndex).Trim();
             var valueSpan = lineSpan.Slice(equalsIndex + 1).Trim();
@@ -183,16 +190,23 @@ public static class WindowExt
             {
                 settings.Y = y;
             }
-            else if (keySpan.SequenceEqual("Width".AsSpan()) && double.TryParse(valueSpan, out var width))
+            else if (
+                keySpan.SequenceEqual("Width".AsSpan()) && double.TryParse(valueSpan, out var width)
+            )
             {
                 settings.Width = width;
             }
-            else if (keySpan.SequenceEqual("Height".AsSpan()) && double.TryParse(valueSpan, out var height))
+            else if (
+                keySpan.SequenceEqual("Height".AsSpan())
+                && double.TryParse(valueSpan, out var height)
+            )
             {
                 settings.Height = height;
             }
-            else if (keySpan.SequenceEqual("WindowState".AsSpan()) &&
-                     Enum.TryParse<WindowState>(valueSpan.ToString(), out var windowState))
+            else if (
+                keySpan.SequenceEqual("WindowState".AsSpan())
+                && Enum.TryParse<WindowState>(valueSpan.ToString(), out var windowState)
+            )
             {
                 settings.WindowState = windowState;
             }
@@ -256,7 +270,7 @@ public static class WindowExt
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Cursor = StandardCursorType.SizeNorthSouth,
-                IsCorner = false
+                IsCorner = false,
             },
             new
             {
@@ -264,7 +278,7 @@ public static class WindowExt
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 Cursor = StandardCursorType.SizeNorthSouth,
-                IsCorner = false
+                IsCorner = false,
             },
             new
             {
@@ -272,7 +286,7 @@ public static class WindowExt
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Cursor = StandardCursorType.SizeWestEast,
-                IsCorner = false
+                IsCorner = false,
             },
             new
             {
@@ -280,16 +294,15 @@ public static class WindowExt
                 VerticalAlignment = VerticalAlignment.Stretch,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Cursor = StandardCursorType.SizeWestEast,
-                IsCorner = false
+                IsCorner = false,
             },
-
             new
             {
                 Tag = "NW",
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Cursor = StandardCursorType.TopLeftCorner,
-                IsCorner = true
+                IsCorner = true,
             },
             new
             {
@@ -297,7 +310,7 @@ public static class WindowExt
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Cursor = StandardCursorType.TopRightCorner,
-                IsCorner = true
+                IsCorner = true,
             },
             new
             {
@@ -305,7 +318,7 @@ public static class WindowExt
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Left,
                 Cursor = StandardCursorType.BottomLeftCorner,
-                IsCorner = true
+                IsCorner = true,
             },
             new
             {
@@ -313,8 +326,8 @@ public static class WindowExt
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Cursor = StandardCursorType.BottomRightCorner,
-                IsCorner = true
-            }
+                IsCorner = true,
+            },
         };
 
         foreach (var config in resizeBorders)
@@ -323,8 +336,12 @@ public static class WindowExt
             {
                 Tag = config.Tag,
                 Background = Brushes.Transparent,
-                Cursor = new Cursor(config.Cursor)
+                Cursor = new Cursor(config.Cursor),
+                Opacity = 0,
+                ZIndex = 9999,
             };
+
+            WindowDecorationProperties.SetElementRole(border, GetRole(config.Tag));
 
             if (config.IsCorner)
             {
@@ -333,23 +350,33 @@ public static class WindowExt
             }
             else
             {
-                if (config.VerticalAlignment == VerticalAlignment.Stretch) border.Width = 6;
-                if (config.HorizontalAlignment == HorizontalAlignment.Stretch) border.Height = 6;
+                if (config.VerticalAlignment == VerticalAlignment.Stretch)
+                    border.Width = 6;
+
+                if (config.HorizontalAlignment == HorizontalAlignment.Stretch)
+                    border.Height = 6;
             }
 
             border.VerticalAlignment = config.VerticalAlignment;
             border.HorizontalAlignment = config.HorizontalAlignment;
 
-            border.PointerPressed += RaiseResize;
+            border.PointerPressed += (s, e) =>
+            {
+                e.Handled = true;
+                RaiseResize(s, e);
+            };
             rootPanel.Children.Add(border);
         }
 
         void RaiseResize(object? sender, PointerPressedEventArgs e)
         {
-            if (!window.CanResize) return;
-            if (sender is not Border { Tag: string edge }) return;
+            if (!window.CanResize)
+                return;
+            if (sender is not Border { Tag: string edge })
+                return;
             var topLevel = TopLevel.GetTopLevel(window);
-            if (topLevel is not Window w) return;
+            if (topLevel is not Window w)
+                return;
 
             var windowEdge = edge switch
             {
@@ -361,11 +388,27 @@ public static class WindowExt
                 "NE" => WindowEdge.NorthEast,
                 "SW" => WindowEdge.SouthWest,
                 "SE" => WindowEdge.SouthEast,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => throw new ArgumentOutOfRangeException(),
             };
 
             w.BeginResizeDrag(windowEdge, e);
             e.Handled = true;
         }
+
+        WindowDecorationsElementRole GetRole(string edge) =>
+            edge switch
+            {
+                "North" => WindowDecorationsElementRole.ResizeN,
+                "South" => WindowDecorationsElementRole.ResizeS,
+                "West" => WindowDecorationsElementRole.ResizeW,
+                "East" => WindowDecorationsElementRole.ResizeE,
+
+                "NW" => WindowDecorationsElementRole.ResizeNW,
+                "NE" => WindowDecorationsElementRole.ResizeNE,
+                "SW" => WindowDecorationsElementRole.ResizeSW,
+                "SE" => WindowDecorationsElementRole.ResizeSE,
+
+                _ => WindowDecorationsElementRole.None,
+            };
     }
 }

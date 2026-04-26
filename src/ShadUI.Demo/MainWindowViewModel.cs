@@ -126,10 +126,11 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     private void SwitchPage(INavigable page, string route = "")
     {
         var pageType = page.GetType();
-        if (string.IsNullOrEmpty(route)) route = pageType.GetCustomAttribute<PageAttribute>()?.Route ?? "dashboard";
-        CurrentRoute = route;
+        if (string.IsNullOrEmpty(route))
+            route = pageType.GetCustomAttribute<PageAttribute>()?.Route ?? "dashboard";
 
-        if (SelectedPage == page) return;
+        if (SelectedPage == page)
+            return;
 
         SelectedPage = page;
         CurrentRoute = route;
@@ -369,11 +370,13 @@ public sealed partial class MainWindowViewModel : ViewModelBase
     {
         base.Dispose();
 
-        if (_disposed) return;
+        if (_disposed)
+            return;
 
         _pageManager.DisposeCachedPages();
 
         DialogManager.Dispose();
+        ToastManager.DismissAll();
 
         _disposed = true;
         GC.SuppressFinalize(this);

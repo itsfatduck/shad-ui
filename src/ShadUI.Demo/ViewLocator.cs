@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Concurrent;
-using System.Runtime.CompilerServices;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using ShadUI.Demo.ViewModels;
@@ -24,28 +24,38 @@ public class ViewLocator : IDataTemplate
 
         var viewModelType = param.GetType();
 
-        var viewType = Cache.GetOrAdd(viewModelType, type =>
-        {
-            var nameSpace = type.Namespace;
-            if (nameSpace is null) return null;
+        var viewType = Cache.GetOrAdd(
+            viewModelType,
+            type =>
+            {
+                var nameSpace = type.Namespace;
+                if (nameSpace is null)
+                    return null;
 
-            var name = type.Name;
-            var viewNameSpace = nameSpace.Replace("ViewModel", "View", StringComparison.Ordinal);
+                var name = type.Name;
+                var viewNameSpace = nameSpace.Replace(
+                    "ViewModel",
+                    "View",
+                    StringComparison.Ordinal
+                );
 
-            var viewName = name.Replace("ViewModel", "Page", StringComparison.Ordinal);
-            var fullName = $"{viewNameSpace}.{viewName}";
+                var viewName = name.Replace("ViewModel", "Page", StringComparison.Ordinal);
+                var fullName = $"{viewNameSpace}.{viewName}";
 
-            var view = CurrentAssembly.GetType(fullName);
+                var view = CurrentAssembly.GetType(fullName);
 
-            if (view is not null) return view;
+                if (view is not null)
+                    return view;
 
-            viewName = name.Replace("ViewModel", "Content", StringComparison.Ordinal);
-            view = CurrentAssembly.GetType($"{viewNameSpace}.{viewName}");
+                viewName = name.Replace("ViewModel", "Content", StringComparison.Ordinal);
+                view = CurrentAssembly.GetType($"{viewNameSpace}.{viewName}");
 
-            return view;
-        });
+                return view;
+            }
+        );
 
-        if (viewType is null) return new TextBlock { Text = "View not found: " + viewModelType.FullName };
+        if (viewType is null)
+            return new TextBlock { Text = "View not found: " + viewModelType.FullName };
 
         if (ViewCache.TryGetValue(param, out var cached))
         {

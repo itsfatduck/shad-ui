@@ -11,8 +11,8 @@
     xmlns:shadui="clr-namespace:ShadUI;assembly=ShadUI"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     xmlns:viewModels="clr-namespace:ShadUI.Demo.ViewModels"
+    xmlns:avalonia="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- Restore LiveCharts: add on UserControl — xmlns:avalonia="clr-namespace:LiveChartsCore.SkiaSharpView.Avalonia;assembly=LiveChartsCore.SkiaSharpView.Avalonia" -->
     <DockPanel LastChildFill="True">
         <Grid
             ColumnDefinitions="* Auto"
@@ -186,17 +186,14 @@
                                                         FontWeight="DemiBold"
                                                         Margin="24,24,24,12"
                                                         Text="Overview" />
-                                                    <!--TODO: Pending Avalonia 12 support - remove LiveCharts workaround after validation.-->
-                                                    <!--<avalonia:CartesianChart 
+                                                    <avalonia:CartesianChart 
                                                         Margin="12,0,12,12"
                                                         Name="CartesianChart1"
-                                                        Series="{Binding Series}"
+                                                        Series="{Binding SeriesWide}"
                                                         TooltipTextPaint="{Binding TooltipTextPaint}"
                                                         TooltipTextSize="14"
                                                         XAxes="{Binding XAxes}"
                                                         YAxes="{Binding YAxes}" />
-                                                        -->
-                                                    
                                                 </DockPanel>
                                             </Border>
                                             <Border
@@ -331,15 +328,14 @@
                                                         FontWeight="DemiBold"
                                                         Margin="24,24,24,12"
                                                         Text="Overview" />
-                                                    <!--<avalonia:CartesianChart
+                                                    <avalonia:CartesianChart
                                                         Margin="12,0,12,12"
                                                         Name="CartesianChart2"
-                                                        Series="{Binding Series}"
+                                                        Series="{Binding SeriesCompact}"
                                                         TooltipTextPaint="{Binding TooltipTextPaint}"
                                                         TooltipTextSize="14"
                                                         XAxes="{Binding XAxes}"
                                                         YAxes="{Binding YAxes}" />
-                                                    -->
                                                 </DockPanel>
                                             </Border>
                                             <Border

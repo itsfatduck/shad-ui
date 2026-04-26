@@ -18,7 +18,10 @@ public class ScrollOpacityMaskAssist
     ///     Gets or sets whether opacity mask bindings should be enabled for Stack scroll viewers.
     /// </summary>
     public static readonly AttachedProperty<bool> IsEnabledProperty =
-        AvaloniaProperty.RegisterAttached<ScrollViewer, bool>("IsEnabled", typeof(ScrollOpacityMaskAssist));
+        AvaloniaProperty.RegisterAttached<ScrollViewer, bool>(
+            "IsEnabled",
+            typeof(ScrollOpacityMaskAssist)
+        );
 
     /// <summary>
     ///     Gets the value of <see cref="IsEnabledProperty" />
@@ -37,14 +40,17 @@ public class ScrollOpacityMaskAssist
         IsEnabledProperty.Changed.AddClassHandler<ScrollViewer>(OnIsEnabledChanged);
     }
 
-    private static void OnIsEnabledChanged(ScrollViewer scrollViewer, AvaloniaPropertyChangedEventArgs e)
+    private static void OnIsEnabledChanged(
+        ScrollViewer scrollViewer,
+        AvaloniaPropertyChangedEventArgs e
+    )
     {
         if (e.NewValue is true)
         {
             // Wait for template to be applied
             scrollViewer.TemplateApplied += OnTemplateApplied;
             scrollViewer.DetachedFromVisualTree += OnDetachedFromVisualTree;
-            
+
             // If template already applied, set up bindings now
             if (scrollViewer.IsInitialized)
             {
@@ -87,7 +93,9 @@ public class ScrollOpacityMaskAssist
 
         // Find the named elements in the template
         var innerPanel = scrollViewer.FindDescendantOfType<Panel>("InnerPanel");
-        var contentPresenter = scrollViewer.FindDescendantOfType<ScrollContentPresenter>("PART_ContentPresenter");
+        var contentPresenter = scrollViewer.FindDescendantOfType<ScrollContentPresenter>(
+            "PART_ContentPresenter"
+        );
         var stackScrollBar = scrollViewer.FindDescendantOfType<ScrollBar>("StackVerticalScrollBar");
 
         if (innerPanel == null || contentPresenter == null || stackScrollBar == null)
@@ -97,18 +105,18 @@ public class ScrollOpacityMaskAssist
         var topBinding1 = new Binding("Value")
         {
             Source = stackScrollBar,
-            Mode = BindingMode.OneWay
+            Mode = BindingMode.OneWay,
         };
         var topBinding2 = new Binding("Minimum")
         {
             Source = stackScrollBar,
-            Mode = BindingMode.OneWay
+            Mode = BindingMode.OneWay,
         };
 
         var topMultiBinding = new MultiBinding
         {
             Converter = ScrollerToOpacityMask.Top,
-            Bindings = { topBinding1, topBinding2 }
+            Bindings = { topBinding1, topBinding2 },
         };
 
         innerPanel.Bind(Panel.OpacityMaskProperty, topMultiBinding);
@@ -117,18 +125,18 @@ public class ScrollOpacityMaskAssist
         var bottomBinding1 = new Binding("Value")
         {
             Source = stackScrollBar,
-            Mode = BindingMode.OneWay
+            Mode = BindingMode.OneWay,
         };
         var bottomBinding2 = new Binding("Maximum")
         {
             Source = stackScrollBar,
-            Mode = BindingMode.OneWay
+            Mode = BindingMode.OneWay,
         };
 
         var bottomMultiBinding = new MultiBinding
         {
             Converter = ScrollerToOpacityMask.Bottom,
-            Bindings = { bottomBinding1, bottomBinding2 }
+            Bindings = { bottomBinding1, bottomBinding2 },
         };
 
         contentPresenter.Bind(ScrollContentPresenter.OpacityMaskProperty, bottomMultiBinding);
@@ -137,7 +145,9 @@ public class ScrollOpacityMaskAssist
     private static void ClearBindings(ScrollViewer scrollViewer)
     {
         var innerPanel = scrollViewer.FindDescendantOfType<Panel>("InnerPanel");
-        var contentPresenter = scrollViewer.FindDescendantOfType<ScrollContentPresenter>("PART_ContentPresenter");
+        var contentPresenter = scrollViewer.FindDescendantOfType<ScrollContentPresenter>(
+            "PART_ContentPresenter"
+        );
 
         innerPanel?.ClearValue(Panel.OpacityMaskProperty);
         contentPresenter?.ClearValue(ScrollContentPresenter.OpacityMaskProperty);
@@ -152,7 +162,8 @@ internal static class ScrollViewerExtensions
     /// <summary>
     ///     Finds a descendant of the specified type with the given name.
     /// </summary>
-    public static T? FindDescendantOfType<T>(this Control control, string name) where T : Control
+    public static T? FindDescendantOfType<T>(this Control control, string name)
+        where T : Control
     {
         foreach (var child in control.GetVisualDescendants())
         {

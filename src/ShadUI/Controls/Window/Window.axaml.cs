@@ -1,16 +1,15 @@
+using System;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Controls.Metadata;
 using Avalonia.Controls.Primitives;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Avalonia.Threading;
 using ShadUI.Utilities.MacOS;
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
 
 // ReSharper disable once CheckNamespace
 namespace ShadUI;
@@ -33,8 +32,10 @@ public class Window : Avalonia.Controls.Window
     /// <summary>
     ///     The font size of the title.
     /// </summary>
-    public static readonly StyledProperty<double> TitleFontSizeProperty =
-        AvaloniaProperty.Register<Window, double>(nameof(TitleFontSize), 14);
+    public static readonly StyledProperty<double> TitleFontSizeProperty = AvaloniaProperty.Register<
+        Window,
+        double
+    >(nameof(TitleFontSize), 14);
 
     /// <summary>
     ///     Gets or sets the value of the <see cref="TitleFontSizeProperty" />.
@@ -63,8 +64,10 @@ public class Window : Avalonia.Controls.Window
     /// <summary>
     ///     The content of the logo.
     /// </summary>
-    public static readonly StyledProperty<Control?> LogoContentProperty =
-        AvaloniaProperty.Register<Window, Control?>(nameof(LogoContent));
+    public static readonly StyledProperty<Control?> LogoContentProperty = AvaloniaProperty.Register<
+        Window,
+        Control?
+    >(nameof(LogoContent));
 
     /// <summary>
     ///     Gets or sets the value of the <see cref="LogoContentProperty" />.
@@ -109,7 +112,7 @@ public class Window : Avalonia.Controls.Window
     ///     The corner radius of the window.
     /// </summary>
     public static readonly StyledProperty<CornerRadius> RootCornerRadiusProperty =
-        AvaloniaProperty.Register<Border, CornerRadius>(nameof(RootCornerRadius));
+        AvaloniaProperty.Register<Window, CornerRadius>(nameof(RootCornerRadius));
 
     /// <summary>
     ///     Gets or sets the value of <see cref="RootCornerRadiusProperty" />.
@@ -138,8 +141,10 @@ public class Window : Avalonia.Controls.Window
     /// <summary>
     ///     Whether to show the menu.
     /// </summary>
-    public static readonly StyledProperty<bool> IsMenuVisibleProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(IsMenuVisible));
+    public static readonly StyledProperty<bool> IsMenuVisibleProperty = AvaloniaProperty.Register<
+        Window,
+        bool
+    >(nameof(IsMenuVisible));
 
     /// <summary>
     ///     Gets or sets the value of the <see cref="IsMenuVisibleProperty" />.
@@ -183,8 +188,10 @@ public class Window : Avalonia.Controls.Window
     /// <summary>
     ///     Whether to enable move.
     /// </summary>
-    public static readonly StyledProperty<bool> CanMoveProperty =
-        AvaloniaProperty.Register<Window, bool>(nameof(CanMove), true);
+    public static readonly StyledProperty<bool> CanMoveProperty = AvaloniaProperty.Register<
+        Window,
+        bool
+    >(nameof(CanMove), true);
 
     /// <summary>
     ///     Gets or sets the value of the <see cref="CanMoveProperty" />.
@@ -214,8 +221,10 @@ public class Window : Avalonia.Controls.Window
     ///     These controls are displayed above all others and fill the entire window.
     ///     Useful for things like popups.
     /// </summary>
-    public static readonly StyledProperty<Controls> HostsProperty =
-        AvaloniaProperty.Register<Window, Controls>(nameof(Hosts), []);
+    public static readonly StyledProperty<Controls> HostsProperty = AvaloniaProperty.Register<
+        Window,
+        Controls
+    >(nameof(Hosts), []);
 
     /// <summary>
     ///     These controls are displayed above all others and fill the entire window.
@@ -229,8 +238,10 @@ public class Window : Avalonia.Controls.Window
     /// <summary>
     ///     Whether to save and restore the window state (position, size, etc.) between application sessions.
     /// </summary>
-    public static readonly StyledProperty<bool> SaveWindowStateProperty = AvaloniaProperty.Register<Window, bool>(
-        nameof(SaveWindowState));
+    public static readonly StyledProperty<bool> SaveWindowStateProperty = AvaloniaProperty.Register<
+        Window,
+        bool
+    >(nameof(SaveWindowState));
 
     /// <summary>
     ///     Gets or sets the value of the <see cref="SaveWindowStateProperty" />.
@@ -273,6 +284,12 @@ public class Window : Avalonia.Controls.Window
         set => SetValue(EnableTrafficLightPositioningProperty, value);
     }
 
+    private WindowState _lastState = WindowState.Normal;
+    private Button? _maximizeButton;
+    private CornerRadius _lastCornerRadius;
+    private IntPtr _nsWindowHandle;
+    private bool _trafficLightPositionInitialized;
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="Window" /> class.
     /// </summary>
@@ -288,13 +305,16 @@ public class Window : Avalonia.Controls.Window
     protected override void OnLoaded(RoutedEventArgs e)
     {
         base.OnLoaded(e);
-
-        if (Application.Current?.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktop) return;
-
-        if (desktop.MainWindow is Window window && window != this) Icon ??= window.Icon;
+        if (
+            Application.Current?.ApplicationLifetime
+                is IClassicDesktopStyleApplicationLifetime desktop
+            && desktop.MainWindow is Window window
+            && window != this
+        )
+        {
+            Icon ??= window.Icon;
+        }
     }
-
-    private WindowState _lastState = WindowState.Normal;
 
     /// <summary>
     ///     Called when a property is changed.
@@ -303,51 +323,34 @@ public class Window : Avalonia.Controls.Window
     protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
     {
         base.OnPropertyChanged(change);
-        if (change.Property == WindowStateProperty &&
-            change is { OldValue: WindowState oldState, NewValue: WindowState newState })
+
+        if (
+            change.Property == WindowStateProperty
+            && change is { OldValue: WindowState oldState, NewValue: WindowState newState }
+        )
         {
             _lastState = oldState;
             OnWindowStateChanged(newState);
         }
-
-        if (change.Property == SaveWindowStateProperty)
+        else if (change.Property == SaveWindowStateProperty)
         {
             var saveState = change.GetNewValue<bool>();
+            var assembly = Assembly.GetEntryAssembly();
             if (saveState)
-            {
-                var assembly = Assembly.GetEntryAssembly();
                 this.ManageWindowState(assembly?.GetName().Name ?? "main");
-            }
             else
-            {
                 this.UnmanageWindowState();
-            }
         }
-
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && _trafficLightPositionInitialized)
+        else if (change.Property == EnableTrafficLightPositioningProperty)
         {
-            if (change.Property == TrafficLightOffsetProperty ||
-                change.Property == BoundsProperty ||
-                change.Property == WindowStateProperty)
-            {
-                ApplyTrafficLightOffset();
-            }
+            if (change.GetNewValue<bool>() && RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                TryInitializeTrafficLight();
         }
-
-        if (change.Property == EnableTrafficLightPositioningProperty)
+        else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && EnableTrafficLightPositioning)
         {
-            var enabled = change.GetNewValue<bool>();
-            if (enabled && RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && !_trafficLightPositionInitialized)
-            {
-                Dispatcher.UIThread.Post(InitializeTrafficLightPositioning, DispatcherPriority.Loaded);
-            }
+            HandleTrafficLightPropertyChange(change);
         }
     }
-
-    private Button? _maximizeButton;
-    private CornerRadius _lastCornerRadius;
-    private IntPtr _nsWindowHandle;
-    private bool _trafficLightPositionInitialized;
 
     /// <summary>
     ///     Called when the template is applied.
@@ -361,138 +364,112 @@ public class Window : Avalonia.Controls.Window
         if (e.NameScope.Get<Button>("PART_MaximizeButton") is { } maximize)
         {
             _maximizeButton = maximize;
-            _maximizeButton.Click += OnMaximizeButtonClicked;
-            EnableWindowsSnapLayout(maximize);
+            maximize.Click += OnMaximizeButtonClicked;
         }
 
         if (e.NameScope.Get<Button>("PART_MinimizeButton") is { } minimize)
-        {
             minimize.Click += (_, _) => WindowState = WindowState.Minimized;
-        }
 
         if (e.NameScope.Get<Button>("PART_CloseButton") is { } close)
-        {
             close.Click += (_, _) => Close();
-        }
 
         if (e.NameScope.Get<Control>("PART_TitleBarBackground") is { } titleBar)
-        {
-            titleBar.PointerPressed += OnTitleBarPointerPressed;
             titleBar.DoubleTapped += OnMaximizeButtonClicked;
-        }
 
-        if (e.NameScope.Get<Panel>("PART_Root") is { } rootPanel)
+        if (
+            !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            && e.NameScope.Get<Panel>("PART_Root") is { } rootPanel
+        )
         {
             this.AddResizeGrip(rootPanel);
         }
 
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
-            if (RootCornerRadius == default)
-            {
-                RootCornerRadius = new CornerRadius(10);
-            }
-        }
+        if (RootCornerRadius == default)
+            RootCornerRadius = new CornerRadius(8);
 
         _lastCornerRadius = RootCornerRadius;
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX) && EnableTrafficLightPositioning)
-        {
-            Dispatcher.UIThread.Post(InitializeTrafficLightPositioning, DispatcherPriority.Loaded);
-        }
+            TryInitializeTrafficLight();
     }
 
+    /// <summary>
+    ///     Attempts to initialize traffic light positioning if not already initialized.
+    /// </summary>
+    private void TryInitializeTrafficLight()
+    {
+        if (_trafficLightPositionInitialized || !RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            return;
+        Dispatcher.UIThread.Post(InitializeTrafficLightPositioning, DispatcherPriority.Loaded);
+    }
+
+    /// <summary>
+    ///     Initializes the traffic light positioning for macOS.
+    /// </summary>
     private void InitializeTrafficLightPositioning()
     {
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) return;
-
-        _nsWindowHandle = this.TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
-        if (_nsWindowHandle == IntPtr.Zero) return;
+        _nsWindowHandle = TryGetPlatformHandle()?.Handle ?? IntPtr.Zero;
+        if (_nsWindowHandle == IntPtr.Zero)
+            return;
 
         ApplyTrafficLightOffset();
         _trafficLightPositionInitialized = true;
     }
 
+    /// <summary>
+    ///     Handles property changes related to traffic light positioning.
+    /// </summary>
+    /// <param name="change">The property change event arguments.</param>
+    private void HandleTrafficLightPropertyChange(AvaloniaPropertyChangedEventArgs change)
+    {
+        if (change.Property != TrafficLightOffsetProperty
+            && change.Property != BoundsProperty
+            && change.Property != WindowStateProperty)
+            return;
+
+        if (_trafficLightPositionInitialized)
+            ApplyTrafficLightOffset();
+        else if (change.Property == BoundsProperty)
+            Dispatcher.UIThread.Post(
+                InitializeTrafficLightPositioning,
+                DispatcherPriority.Background
+            );
+    }
+
+    /// <summary>
+    ///     Applies the traffic light offset to the macOS window.
+    /// </summary>
     private void ApplyTrafficLightOffset()
     {
-        if (_nsWindowHandle == IntPtr.Zero) return;
-        if (WindowState == WindowState.FullScreen) return;
-
+        if (_nsWindowHandle == IntPtr.Zero || WindowState == WindowState.FullScreen)
+            return;
         TrafficLightHelper.SetTrafficLightOffset(_nsWindowHandle, TrafficLightOffset);
     }
 
+    /// <summary>
+    ///     Handles the maximize button click event.
+    /// </summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="args">The event arguments.</param>
     private void OnMaximizeButtonClicked(object? sender, RoutedEventArgs args)
     {
-        if (!CanMaximize || !CanResize || WindowState == WindowState.FullScreen) return;
-
-        WindowState = WindowState == WindowState.Maximized
-            ? WindowState.Normal
-            : WindowState.Maximized;
+        if (!CanMaximize || !CanResize || WindowState == WindowState.FullScreen)
+            return;
+        WindowState =
+            WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
     }
 
+    /// <summary>
+    ///     Gets or sets a value indicating whether the window has an open dialog.
+    /// </summary>
     internal bool HasOpenDialog { get; set; }
 
-    private bool _snapLayoutEnabled = true;
-
-    private void EnableWindowsSnapLayout(Button maximize)
-    {
-        var pointerOnMaxButton = false;
-        var setter = typeof(Button).GetProperty("IsPointerOver");
-        var proc = (IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam, ref bool handled) =>
-        {
-            if (!_snapLayoutEnabled) return IntPtr.Zero;
-
-            switch (msg)
-            {
-                case 533:
-                    if (!pointerOnMaxButton) break;
-                    WindowState = WindowState == WindowState.Maximized
-                        ? WindowState.Normal
-                        : WindowState.Maximized;
-                    break;
-                case 0x0084:
-                    var point = new PixelPoint(
-                        (short)(ToInt32(lParam) & 0xffff),
-                        (short)(ToInt32(lParam) >> 16));
-                    var size = maximize.Bounds;
-                    var buttonLeftTop = maximize.PointToScreen(FlowDirection == FlowDirection.LeftToRight
-                        ? new Point(size.Width, 0)
-                        : new Point(0, 0));
-                    var x = (buttonLeftTop.X - point.X) / RenderScaling;
-                    var y = (point.Y - buttonLeftTop.Y) / RenderScaling;
-                    if (new Rect(0, 0,
-                            size.Width,
-                            size.Height)
-                        .Contains(new Point(x, y)))
-                    {
-                        if (HasOpenDialog) return (IntPtr)9;
-
-                        setter?.SetValue(maximize, true);
-                        pointerOnMaxButton = true;
-                        handled = true;
-                        return (IntPtr)9;
-                    }
-                    pointerOnMaxButton = false;
-                    setter?.SetValue(maximize, false);
-                    break;
-            }
-
-            return IntPtr.Zero;
-
-            static int ToInt32(IntPtr ptr)
-            {
-                return IntPtr.Size == 4
-                    ? ptr.ToInt32()
-                    : (int)(ptr.ToInt64() & 0xffffffff);
-            }
-        };
-
-        Win32Properties.AddWndProcHookCallback(this, new Win32Properties.CustomWndProcHookCallback(proc));
-    }
-
+    /// <summary>
+    ///     Called when the window state changes.
+    /// </summary>
+    /// <param name="state">The new window state.</param>
     private void OnWindowStateChanged(WindowState state)
     {
-        _snapLayoutEnabled = WindowState != WindowState.FullScreen && CanMaximize && CanResize;
         switch (state)
         {
             case WindowState.FullScreen:
@@ -503,7 +480,9 @@ public class Window : Avalonia.Controls.Window
                 break;
             case WindowState.Maximized:
                 ToggleMaxButtonVisibility(CanMaximize);
-                RootCornerRadius = _lastCornerRadius;
+                if (_lastState == WindowState.Normal || _lastState == WindowState.FullScreen)
+                    _lastCornerRadius = RootCornerRadius;
+                RootCornerRadius = new CornerRadius(0);
                 Margin = new Thickness(0);
                 break;
             case WindowState.Normal:
@@ -517,17 +496,14 @@ public class Window : Avalonia.Controls.Window
         }
     }
 
+    /// <summary>
+    ///     Toggles the visibility of the maximize button.
+    /// </summary>
+    /// <param name="visible">Whether the button should be visible.</param>
     private void ToggleMaxButtonVisibility(bool visible)
     {
-        if (_maximizeButton is null) return;
-
-        _maximizeButton.IsVisible = visible;
-    }
-
-    private void OnTitleBarPointerPressed(object? sender, PointerPressedEventArgs e)
-    {
-        base.OnPointerPressed(e);
-        if (CanMove && WindowState != WindowState.FullScreen) BeginMoveDrag(e);
+        if (_maximizeButton is not null)
+            _maximizeButton.IsVisible = visible;
     }
 
     /// <summary>
@@ -535,7 +511,8 @@ public class Window : Avalonia.Controls.Window
     /// </summary>
     protected void ExitFullScreen()
     {
-        if (WindowState == WindowState.FullScreen) WindowState = _lastState;
+        if (WindowState == WindowState.FullScreen)
+            WindowState = _lastState;
     }
 
     /// <summary>
@@ -546,8 +523,12 @@ public class Window : Avalonia.Controls.Window
         WindowState = _lastState == WindowState.FullScreen ? WindowState.Maximized : _lastState;
     }
 
+    /// <summary>
+    ///     Static constructor for the Window class.
+    /// </summary>
     static Window()
     {
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) OnScreenKeyboard.Integrate();
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            OnScreenKeyboard.Integrate();
     }
 }

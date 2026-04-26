@@ -14,23 +14,23 @@ internal sealed class Program
     {
         try
         {
-            BuildAvaloniaApp()
-                .StartWithClassicDesktopLifetime(args);
+            BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         }
         catch (Exception e)
         {
             var serviceProvider = new ServiceProvider();
 
             var logger = serviceProvider.GetService<ILogger>();
-            logger.Fatal(e, "An unhandled exception occurred during bootstrapping the application.");
+            logger.Fatal(
+                e,
+                "An unhandled exception occurred during bootstrapping the application."
+            );
         }
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.
     public static AppBuilder BuildAvaloniaApp()
     {
-        return AppBuilder.Configure<App>()
-            .UsePlatformDetect()
-            .LogToTrace();
+        return AppBuilder.Configure<App>().UsePlatformDetect().LogToTrace();
     }
 }

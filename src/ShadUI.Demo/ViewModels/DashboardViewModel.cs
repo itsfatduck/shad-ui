@@ -1,60 +1,79 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using System;
+using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using ShadUI.Demo.Services;
+using SkiaSharp;
 
 namespace ShadUI.Demo.ViewModels;
 
 [Page("dashboard")]
 public sealed partial class DashboardViewModel : ViewModelBase, INavigable
 {
-    /*
-    // TODO: Pending Avalonia 12 support - re-enable dashboard chart integration.
-    private readonly SKTypeface _typeface;
+    private readonly double[] _chartValues = new double[12];
+    private readonly SolidColorPaint _seriesFillPaint;
+    private readonly SolidColorPaint _axisLabelPaint;
 
     [ObservableProperty]
-    private static SolidColorPaint _tooltipTextPaint = null!;
-    */
-    private readonly PageManager _pageManager;
+    private SolidColorPaint _tooltipTextPaint = null!;
 
-    /// <summary>
-    ///     Gets the theme watcher for the application.
-    /// </summary>
+    private readonly PageManager _pageManager;
+    private readonly EventHandler<ThemeColors> _themeChangedHandler;
+    private readonly ChartFontProvider _chartFontProvider;
     public ThemeWatcher ThemeWatcher { get; }
 
-
-
-    public DashboardViewModel(PageManager pageManager, ThemeWatcher themeWatcher)
+    public DashboardViewModel(
+        PageManager pageManager,
+        ThemeWatcher themeWatcher,
+        ChartFontProvider chartFontProvider
+    )
     {
         _pageManager = pageManager;
         ThemeWatcher = themeWatcher;
+        _chartFontProvider = chartFontProvider;
+        _themeChangedHandler = OnThemeColorsChanged;
+        ThemeWatcher.ThemeChanged += _themeChangedHandler;
 
-        /*
-        // TODO: Pending Avalonia 12 support - restore chart data/series setup when chart library is compatible.
-        ThemeWatcher.ThemeChanged += (_, colors) =>
-        {
-            UpdateAxesLabelPaints(colors);
-            UpdateSeriesFill(colors.PrimaryColor);
-        };
+        var initialForeground = ToSKColor(ThemeWatcher.ThemeColors.ForegroundColor);
 
-        var fontUri = new Uri("avares://shadui-app/Assets/Fonts/Manrope-Regular.ttf");
-        var fontAsset = AssetLoader.Open(fontUri);
+        _axisLabelPaint = new SolidColorPaint(initialForeground) { SKTypeface = _chartFontProvider.Typeface };
+        _tooltipTextPaint = new SolidColorPaint(initialForeground) { SKTypeface = _chartFontProvider.Typeface };
+        _seriesFillPaint = new SolidColorPaint(SKColors.Transparent);
 
-        using var skData = SKData.Create(fontAsset);
-        _typeface = SKTypeface.FromData(skData);
+        FillChartValues(_chartValues);
 
-        _tooltipTextPaint = new SolidColorPaint
-        {
-            Color = SKColors.Black,
-            SKTypeface = _typeface
-        };
+        SeriesWide = [new ColumnSeries<double> { Values = _chartValues, Fill = _seriesFillPaint }];
+        SeriesCompact =
+        [
+            new ColumnSeries<double> { Values = _chartValues, Fill = _seriesFillPaint },
+        ];
 
         XAxes =
         [
             new Axis
             {
-                Labels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                LabelsPaint = new SolidColorPaint { Color = SKColors.Gray, SKTypeface = _typeface },
+                Labels =
+                [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                ],
+                LabelsPaint = _axisLabelPaint,
                 TextSize = 12,
-                MinStep = 1
-            }
+                MinStep = 1,
+            },
         ];
 
         YAxes =
@@ -62,80 +81,54 @@ public sealed partial class DashboardViewModel : ViewModelBase, INavigable
             new Axis
             {
                 Labeler = Labelers.Currency,
-                LabelsPaint = new SolidColorPaint { Color = SKColors.Gray, SKTypeface = _typeface },
+                LabelsPaint = _axisLabelPaint,
                 TextSize = 12,
                 MinStep = 1500,
-                ShowSeparatorLines = false
-            }
+                ShowSeparatorLines = false,
+            },
         ];
-        */
     }
 
-    /*
-    private void UpdateSeriesFill(Color primary)
-    {
-        var color = new SKColor(primary.R, primary.G, primary.B, primary.A);
-        if (Series.Length > 0) ((ColumnSeries<double>)Series[0]).Fill = new SolidColorPaint(color);
-    }
-
-    private void UpdateAxesLabelPaints(ThemeColors colors)
-    {
-        var foreground = new SKColor(
-            colors.ForegroundColor.R,
-            colors.ForegroundColor.G,
-            colors.ForegroundColor.B,
-            colors.ForegroundColor.A);
-
-        var foregroundPaint = new SolidColorPaint
-        {
-            Color = foreground,
-            SKTypeface = _typeface
-        };
-
-        XAxes[0].LabelsPaint = foregroundPaint;
-        YAxes[0].LabelsPaint = foregroundPaint;
-    }
-
-    public ISeries[] Series { get; set; } =
-    [
-        new ColumnSeries<double>
-        {
-            Values = GenerateRandomValues(),
-            Fill = new SolidColorPaint(SKColors.Transparent)
-        }
-    ];
-
-    private static double[] GenerateRandomValues()
-    {
-        var random = new Random();
-
-        var values = new double[12];
-        for (var i = 0; i < values.Length; i++)
-        {
-            values[i] = random.Next(1000, 5000);
-        }
-
-        return values;
-    }
-
+    public ISeries[] SeriesWide { get; }
+    public ISeries[] SeriesCompact { get; }
     public Axis[] XAxes { get; set; }
-
     public Axis[] YAxes { get; set; }
-    */
-
-    [RelayCommand]
-    private void NextPage()
-    {
-        _pageManager.Navigate<ThemeViewModel>();
-    }
 
     public void Initialize()
     {
-        /*
-        // TODO: Pending Avalonia 12 support - re-enable chart initialization.
-        ((ColumnSeries<double>)Series[0]).Values = GenerateRandomValues();
-        var primary = ThemeWatcher.ThemeColors.PrimaryColor;
-        UpdateSeriesFill(primary);
-        */
+        FillChartValues(_chartValues);
+        ((ColumnSeries<double>)SeriesWide[0]).Values = _chartValues;
+        ((ColumnSeries<double>)SeriesCompact[0]).Values = _chartValues;
+        UpdatePaints(ThemeWatcher.ThemeColors);
+    }
+
+    private void OnThemeColorsChanged(object? sender, ThemeColors colors) => UpdatePaints(colors);
+
+    private void UpdatePaints(ThemeColors colors)
+    {
+        var foreground = ToSKColor(colors.ForegroundColor);
+        _axisLabelPaint.Color = foreground;
+        _axisLabelPaint.SKTypeface = _chartFontProvider.Typeface;
+        TooltipTextPaint.Color = foreground;
+        TooltipTextPaint.SKTypeface = _chartFontProvider.Typeface;
+        _seriesFillPaint.Color = ToSKColor(colors.PrimaryColor);
+    }
+
+    private static void FillChartValues(double[] values)
+    {
+        var random = new Random();
+        for (var i = 0; i < values.Length; i++)
+            values[i] = random.Next(1000, 5000);
+    }
+
+    private static SKColor ToSKColor(Color color) => new(color.R, color.G, color.B, color.A);
+
+    [RelayCommand]
+    private void NextPage() => _pageManager.Navigate<ThemeViewModel>();
+
+    public override void Dispose()
+    {
+        ThemeWatcher.ThemeChanged -= _themeChangedHandler;
+        base.Dispose();
     }
 }

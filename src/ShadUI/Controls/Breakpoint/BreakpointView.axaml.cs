@@ -27,8 +27,10 @@ public class BreakpointView : Grid
     /// <summary>
     ///     Defines the <see cref="Invert" /> property.
     /// </summary>
-    public static readonly StyledProperty<bool> InvertProperty = AvaloniaProperty.Register<BreakpointViewPort, bool>(
-        nameof(Invert));
+    public static readonly StyledProperty<bool> InvertProperty = AvaloniaProperty.Register<
+        BreakpointViewPort,
+        bool
+    >(nameof(Invert));
 
     /// <summary>
     ///     Gets or sets a value indicating whether to invert the breakpoint logic.

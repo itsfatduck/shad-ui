@@ -4,6 +4,7 @@ using Avalonia;
 using CommunityToolkit.Mvvm.Messaging;
 using Jab;
 using Serilog;
+using ShadUI.Demo.Services;
 using ShadUI.Demo.ViewModels;
 using ShadUI.Demo.ViewModels.Examples.ComboBox;
 using ShadUI.Demo.ViewModels.Examples.DataTable;
@@ -64,12 +65,15 @@ namespace ShadUI.Demo;
 [Singleton(typeof(ThemeWatcher), Factory = nameof(ThemeWatcherFactory))]
 [Singleton(typeof(ILogger), Factory = nameof(LoggerFactory))]
 [Singleton(typeof(PageManager), Factory = nameof(PageManagerFactory))]
+[Singleton(typeof(ChartFontProvider))]
 public partial class ServiceProvider
 {
     public ILogger LoggerFactory()
     {
-        var currentFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "ShadUI\\logs");
+        var currentFolder = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+            "ShadUI\\logs"
+        );
 
         Directory.CreateDirectory(currentFolder); //ensure the directory exists
 

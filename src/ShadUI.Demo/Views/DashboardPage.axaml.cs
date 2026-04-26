@@ -1,5 +1,7 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
+using LiveChartsCore.Kernel;
 using ShadUI.Demo.ViewModels;
 
 namespace ShadUI.Demo.Views;
@@ -9,38 +11,34 @@ public partial class DashboardPage : UserControl
     public DashboardPage()
     {
         InitializeComponent();
-        // LiveCharts / theme refresh — restore when re-enabling CartesianChart in DashboardPage.axaml
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
     }
 
-    private void OnUnloaded(object? sender, RoutedEventArgs e)
+    private void OnLoaded(object? sender, RoutedEventArgs e) => RefreshCharts();
+
+    private void OnUnloaded(object? sender, RoutedEventArgs e) => Loaded -= OnLoaded;
+
+    private void RefreshCharts()
     {
-        if (DataContext is not DashboardViewModel vm) return;
-        vm.ThemeWatcher.ThemeChanged -= OnThemeChanged;
+        Dispatcher.UIThread.Post(
+            () =>
+            {
+                if (!IsLoaded)
+                    return;
+                TryUpdateChart(CartesianChart1);
+                TryUpdateChart(CartesianChart2);
+            },
+            DispatcherPriority.Loaded
+        );
     }
 
-    private void OnLoaded(object? sender, RoutedEventArgs e)
+    private static void TryUpdateChart(LiveChartsCore.SkiaSharpView.Avalonia.CartesianChart? chart)
     {
-        if (DataContext is not DashboardViewModel vm) return;
-        vm.ThemeWatcher.ThemeChanged += OnThemeChanged;
+        if (chart?.CoreChart is null)
+            return;
+        chart.CoreChart.Update(
+            new ChartUpdateParams { IsAutomaticUpdate = false, Throttling = false }
+        );
     }
-
-    private void OnThemeChanged(object? sender, ThemeColors e)
-    {
-
-        // TODO: Re-enable when LiveCharts is restored
-        /*
-        Dispatcher.UIThread.Post(() =>
-        {
-            CartesianChart1.CoreChart.Update(new ChartUpdateParams
-                { IsAutomaticUpdate = false, Throttling = false });
-            CartesianChart2.CoreChart.Update(new ChartUpdateParams
-                { IsAutomaticUpdate = false, Throttling = false });
-        });
-        */
-    }
-
-
-
 }
